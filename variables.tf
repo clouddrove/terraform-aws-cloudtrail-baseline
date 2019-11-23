@@ -43,63 +43,68 @@ variable "tags" {
 }
 
 variable "enabled" {
-  description = "The boolean flag whether this module is enabled or not. No resources are created when set to false."
+  type        = bool
   default     = true
+  description = "The boolean flag whether this module is enabled or not. No resources are created when set to false."
 }
 
-//variable "aws_account_id" {
-//  description = "The AWS Account ID number of the account."
-//}
 
 variable "cloudtrail_name" {
-  description = "The name of the trail."
+  type        = string
   default     = "cloudtrail-multi-region"
+  description = "The name of the trail."
 }
 
 variable "cloudwatch_logs_group_name" {
-  description = "The name of CloudWatch Logs group to which CloudTrail events are delivered."
+  type        = string
   default     = "iam_role_name"
+  description = "The name of CloudWatch Logs group to which CloudTrail events are delivered."
 }
 
 variable "cloudwatch_logs_retention_in_days" {
-  description = "Number of days to retain logs for. CIS recommends 365 days.  Possible values are: 0, 1, 3, 5, 7, 14, 30, 60, 90, 120, 150, 180, 365, 400, 545, 731, 1827, and 3653. Set to 0 to keep logs indefinitely."
+  tupe        = number
   default     = 365
+  description = "Number of days to retain logs for. CIS recommends 365 days.  Possible values are: 0, 1, 3, 5, 7, 14, 30, 60, 90, 120, 150, 180, 365, 400, 545, 731, 1827, and 3653. Set to 0 to keep logs indefinitely."
 }
 
 variable "iam_role_name" {
-  description = "The name of the IAM Role to be used by CloudTrail to delivery logs to CloudWatch Logs group."
+  type        = string
   default     = "CloudTrail-CloudWatch-Delivery-Role"
+  description = "The name of the IAM Role to be used by CloudTrail to delivery logs to CloudWatch Logs group."
 }
 
 variable "iam_role_policy_name" {
-  description = "The name of the IAM Role Policy to be used by CloudTrail to delivery logs to CloudWatch Logs group."
+  type        = string
   default     = "CloudTrail-CloudWatch-Delivery-Policy"
+  description = "The name of the IAM Role Policy to be used by CloudTrail to delivery logs to CloudWatch Logs group."
 }
 
 variable "key_deletion_window_in_days" {
-  description = "Duration in days after which the key is deleted after destruction of the resource, must be between 7 and 30 days. Defaults to 30 days."
+  type        = number
   default     = 10
+  description = "Duration in days after which the key is deleted after destruction of the resource, must be between 7 and 30 days. Defaults to 30 days."
+
 }
 
-//variable "region" {
-//  description = "The AWS region in which CloudTrail is set up."
-//}
-
 variable "s3_bucket_name" {
+  type        = string
   description = "The name of the S3 bucket which will store configuration snapshots."
 }
 
 variable "s3_key_prefix" {
-  description = "The prefix for the specified S3 bucket."
+  type        = string
   default     = ""
+  description = "The prefix for the specified S3 bucket."
 }
 
 variable "is_organization_trail" {
-  description = "Specifies whether the trail is an AWS Organizations trail. Organization trails log events for the master account and all member accounts. Can only be created in the organization master account."
+  type        = bool
   default     = false
+  description = "Specifies whether the trail is an AWS Organizations trail. Organization trails log events for the master account and all member accounts. Can only be created in the organization master account."
 }
 
 variable "account_type" {
-  description = "The type of the AWS account. The possible values are `individual`, `master` and `member` . Specify `master` and `member` to set up centalized logging for multiple accounts in AWS Organization. Use individual` otherwise."
+  type        = string
   default     = "individual"
+  description = "The type of the AWS account. The possible values are `individual`, `master` and `member` . Specify `master` and `member` to set up centalized logging for multiple accounts in AWS Organization. Use individual` otherwise."
 }

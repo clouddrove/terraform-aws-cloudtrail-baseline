@@ -1,11 +1,3 @@
-# Managed By : CloudDrove
-# Description : This Script is used to create EC2, EIP, EBS VOLUME,  and VOLUME ATTACHMENT.
-# Copyright @ CloudDrove. All Right Reserved.
-
-#Module      : Label
-#Description : This terraform module is designed to generate consistent label names and 
-#              tags for resources. You can use terraform-labels to implement a strict 
-#              naming convention.
 module "labels" {
   source = "git::https://github.com/clouddrove/terraform-labels.git?ref=tags/0.12.0"
 
@@ -15,17 +7,15 @@ module "labels" {
   label_order = var.label_order
 }
 
-
 data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
 
-# CloudWatch Logs group to accept CloudTrail event stream.
 
 resource "aws_cloudwatch_log_group" "cloudtrail_events" {
-  count = var.enabled ? 1 : 0
+  count             = var.enabled ? 1 : 0
   name              = var.cloudwatch_logs_group_name
   retention_in_days = var.cloudwatch_logs_retention_in_days
-  tags = module.labels.tags
+  tags              = module.labels.tags
 }
 
 data "aws_iam_policy_document" "cloudwatch_delivery_assume_policy" {
@@ -41,7 +31,7 @@ data "aws_iam_policy_document" "cloudwatch_delivery_assume_policy" {
 # ----------------------------------------------------------------------------------------------------------------------------------------
 
 resource "aws_iam_role" "cloudwatch_delivery" {
-  count = var.enabled ? 1 : 0
+  count              = var.enabled ? 1 : 0
   name               = var.iam_role_name
   assume_role_policy = data.aws_iam_policy_document.cloudwatch_delivery_assume_policy.json
 
@@ -49,9 +39,9 @@ resource "aws_iam_role" "cloudwatch_delivery" {
 }
 
 resource "aws_iam_role_policy" "cloudwatch_delivery_policy" {
-  count = var.enabled ? 1 : 0
-  name = var.iam_role_policy_name
-  role = aws_iam_role.cloudwatch_delivery[0].id
+  count  = var.enabled ? 1 : 0
+  name   = var.iam_role_policy_name
+  role   = aws_iam_role.cloudwatch_delivery[0].id
   policy = data.aws_iam_policy_document.cloudwatch_delivery_policy[0].json
 }
 
@@ -60,12 +50,12 @@ data "aws_iam_policy_document" "cloudwatch_delivery_policy" {
   statement {
     sid       = "AWSCloudTrailCreateLogStream2014110"
     actions   = ["logs:CreateLogStream"]
-    resources = ["arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:${aws_cloudwatch_log_group.cloudtrail_events[0].name}:log-stream:*"]
+    resources = [format("arn:aws:logs:%s:%s:log-group:%s:log-stream:*", data.aws_region.current.name, data.aws_caller_identity.current.account_id, aws_cloudwatch_log_group.cloudtrail_events[0].name)]
   }
   statement {
     sid       = "AWSCloudTrailPutLogEvents20141101"
     actions   = ["logs:PutLogEvents"]
-    resources = ["arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:${aws_cloudwatch_log_group.cloudtrail_events[0].name}:log-stream:*"]
+    resources = [format("arn:aws:logs:%s:%s:log-group:%s:log-stream:*", data.aws_region.current.name, data.aws_caller_identity.current.account_id, aws_cloudwatch_log_group.cloudtrail_events[0].name)]
   }
 }
 
@@ -73,10 +63,10 @@ data "aws_iam_policy_document" "cloudwatch_delivery_policy" {
 module "kms_key" {
   source = "git::https://github.com/clouddrove/terraform-aws-kms.git?ref=tags/0.12.1"
 
-  name        = "kms"
-  application = var.application
-  environment = var.environment
-  label_order = ["environment", "name", "application"]
+  name                    = "kms"
+  application             = var.application
+  environment             = var.environment
+  label_order             = ["environment", "name", "application"]
   is_enabled              = var.enabled
   description             = "KMS key for cloudtrail"
   deletion_window_in_days = 7
@@ -92,10 +82,8 @@ data "aws_iam_policy_document" "cloudtrail_key_policy" {
     sid = "Enable IAM User Permissions"
 
     principals {
-      type = "AWS"
-      identifiers = [
-        "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
-      ]
+      type        = "AWS"
+      identifiers = [format("arn:aws:iam::%s:root", data.aws_caller_identity.current.account_id)]
     }
     actions   = ["kms:*"]
     resources = ["*"]
@@ -112,7 +100,8 @@ data "aws_iam_policy_document" "cloudtrail_key_policy" {
     condition {
       test     = "StringLike"
       variable = "kms:EncryptionContext:aws:cloudtrail:arn"
-      values   = ["arn:aws:cloudtrail:*:${data.aws_caller_identity.current.account_id}:trail/*"]
+      values = [
+      format("arn:aws:cloudtrail:*:%s:trail/*", data.aws_caller_identity.current.account_id)]
     }
   }
 
@@ -145,7 +134,8 @@ data "aws_iam_policy_document" "cloudtrail_key_policy" {
     condition {
       test     = "StringLike"
       variable = "kms:EncryptionContext:aws:cloudtrail:arn"
-      values   = ["arn:aws:cloudtrail:*:${data.aws_caller_identity.current.account_id}:trail/*"]
+      values = [
+      format("arn:aws:cloudtrail:*:%s:trail/*", data.aws_caller_identity.current.account_id)]
     }
   }
   statement {
@@ -186,7 +176,7 @@ data "aws_iam_policy_document" "cloudtrail_key_policy" {
     condition {
       test     = "StringLike"
       variable = "kms:EncryptionContext:aws:cloudtrail:arn"
-      values   = ["arn:aws:cloudtrail:*:${data.aws_caller_identity.current.account_id}:trail/*"]
+      values   = [format("arn:aws:cloudtrail:*:%s:trail/*", data.aws_caller_identity.current.account_id)]
     }
   }
 }
@@ -221,9 +211,7 @@ data "aws_iam_policy_document" "default" {
       "s3:GetBucketAcl",
     ]
 
-    resources = [
-      "arn:aws:s3:::${var.s3_bucket_name}-${var.application}",
-    ]
+    resources = [format("arn:aws:s3:::%s-%s", var.s3_bucket_name, var.application), ]
   }
 
   statement {
@@ -238,9 +226,7 @@ data "aws_iam_policy_document" "default" {
       "s3:PutObject",
     ]
 
-    resources = [
-      "arn:aws:s3:::${var.s3_bucket_name}-${var.application}/*",
-    ]
+    resources = [format("arn:aws:s3:::%s-%s/*", var.s3_bucket_name, var.application), ]
 
     condition {
       test     = "StringEquals"
@@ -264,11 +250,11 @@ locals {
 module "cloudtrail" {
   source = "git::https://github.com/clouddrove/terraform-aws-cloudtrail.git?ref=tags/0.12.2"
 
-  name        = "cloudtrail"
-  application = var.application
-  environment = var.environment
-  label_order = ["name", "application"]
-
+  name                          = "cloudtrail"
+  application                   = var.application
+  environment                   = var.environment
+  label_order                   = ["name", "application"]
+  enabled_cloudtrail            = var.enabled
   s3_bucket_name                = module.s3_bucket.id
   enable_logging                = true
   enable_log_file_validation    = true

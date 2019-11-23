@@ -5,13 +5,13 @@
 #
 
 # Name of this project
-name : Terraform AWS EC2
+name : Terraform AWS Cloudtrail Baseline
 
 # License of this project
 license: "MIT"
 
 # Canonical GitHub repo
-github_repo: clouddrove/terraform-aws-ec2
+github_repo: clouddrove/terraform-aws-cloudtrail-baseline
 
 # Badges to display
 badges:
@@ -24,7 +24,7 @@ badges:
 
 #  description of this project
 description: |-
-  Terraform module to create an EC2 resource on AWS with Elastic IP Addresses and Elastic Block Store.
+  Terraform module to create an cloudtrail resource on AWS with S3 encryption with KMS key.
 
 # extra content
 include:
@@ -35,31 +35,19 @@ usage : |-
   ### Simple Example
   Here is an example of how you can use this module in your inventory structure:
   ```hcl
-      module "ec2" {
-        source = "git::https://github.com/clouddrove/terraform-aws-ec2.git?ref=tags/0.12.3"
-        name        = "ec2-instance"
+        module "cloudtrail" {
+        source = "git::https://github.com/clouddrove/terraform-aws-cloudtrail-baseline.git?ref=tags/0.12.1"
+        name        = "trails"
         application = "clouddrove"
         environment = "test"
-        label_order = ["environment", "application", "name"]        instance_count = 2
-        ami            = "ami-08d658f84a6d84a80"
-        instance_type  = "t2.nano"
-        key_name       = module.keypair.name
-        monitoring     = false
-        tenancy        = "default"
-        vpc_security_group_ids_list = [module.ssh.security_group_ids, module.http-https.security_group_ids]
-        subnet_ids                  = tolist(module.public_subnets.public_subnet_id)
-        assign_eip_address          = true
-        associate_public_ip_address = true
-        instance_profile_enabled = true
-        iam_instance_profile     = module.iam-role.name
-        disk_size          = 8
-        ebs_optimized      = false
-        ebs_volume_enabled = true
-        ebs_volume_type    = "gp2"
-        ebs_volume_size    = 30
-        user_data     = "./_bin/user_data.sh"
-        instance_tags = { "snapshot" = true }
-        dns_zone_id = "Z1XJD7SSBKXLC1"
-        hostname    = "ec2"
+        label_order = ["environment", "application", "name"]
+        enabled                           = true
+        iam_role_name                     = "CloudTrail-CloudWatch-Delivery-Role"
+        iam_role_policy_name              = "CloudTrail-CloudWatch-Delivery-Policy"
+        account_type                      = "individual"
+        key_deletion_window_in_days       = 10
+        cloudwatch_logs_retention_in_days = 365
+        cloudwatch_logs_group_name        = "cloudtrail-log-group"
+        s3_bucket_name                    = "logs-bucket"
       }
   ```

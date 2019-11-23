@@ -4,7 +4,8 @@ provider "aws" {
 
 
 module "cloudtrail" {
-  source = "./../"
+  source = "git::https://github.com/clouddrove/terraform-aws-cloudtrail-baseline.git?ref=tags/0.12.1"
+
   name        = "trails"
   application = "clouddrove"
   environment = "test"
@@ -18,5 +19,5 @@ module "cloudtrail" {
   cloudwatch_logs_retention_in_days = 365
   cloudwatch_logs_group_name        = "cloudtrail-log-group"
 
-  s3_bucket_name                    = "logs-bucket"
+  s3_bucket_name = "logs-bucket"
 }
