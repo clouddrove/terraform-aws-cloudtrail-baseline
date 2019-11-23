@@ -4,7 +4,7 @@ provider "aws" {
 
 
 module "cloudtrail" {
-  source = "git::https://github.com/clouddrove/terraform-aws-cloudtrail-baseline.git?ref=tags/0.12.1"
+  source = "git::https://github.com/clouddrove/terraform-aws-cloudtrail-baseline.git?ref=tags/0.12.0"
 
   name        = "trails"
   application = "clouddrove"
