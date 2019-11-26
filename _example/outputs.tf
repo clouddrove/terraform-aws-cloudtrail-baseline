@@ -1,10 +1,9 @@
-
-output "log_group" {
-  value       = module.cloudtrail.*.log_group
-  description = "The CloudWatch Logs log group which stores CloudTrail events."
+output "cloudtrail_arn" {
+  value       = module.cloudtrail.*.cloudtrail_arn
+  description = "The Amazon Resource Name of the trail"
 }
 
 output "tags" {
   value       = module.cloudtrail.tags
-  description = "A mapping of tags to assign to the resource."
+  description = "A mapping of tags to assign to the Cloudtrail."
 }

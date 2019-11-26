@@ -102,7 +102,7 @@ Here is an example of how you can use this module in your inventory structure:
 | attributes | Additional attributes (e.g. `1`). | list | `<list>` | no |
 | cloudtrail_name | The name of the trail. | string | `cloudtrail-multi-region` | no |
 | cloudwatch_logs_group_name | The name of CloudWatch Logs group to which CloudTrail events are delivered. | string | `iam_role_name` | no |
-| cloudwatch_logs_retention_in_days | Number of days to retain logs for. CIS recommends 365 days.  Possible values are: 0, 1, 3, 5, 7, 14, 30, 60, 90, 120, 150, 180, 365, 400, 545, 731, 1827, and 3653. Set to 0 to keep logs indefinitely. | string | `365` | no |
+| cloudwatch_logs_retention_in_days | Number of days to retain logs for. CIS recommends 365 days.  Possible values are: 0, 1, 3, 5, 7, 14, 30, 60, 90, 120, 150, 180, 365, 400, 545, 731, 1827, and 3653. Set to 0 to keep logs indefinitely. | number | `365` | no |
 | delimiter | Delimiter to be used between `organization`, `environment`, `name` and `attributes`. | string | `-` | no |
 | enabled | The boolean flag whether this module is enabled or not. No resources are created when set to false. | bool | `true` | no |
 | environment | Environment (e.g. `prod`, `dev`, `staging`). | string | `` | no |
@@ -120,8 +120,10 @@ Here is an example of how you can use this module in your inventory structure:
 
 | Name | Description |
 |------|-------------|
-| log_delivery_iam_role | The IAM role used for delivering CloudTrail events to CloudWatch Logs. |
-| log_group | The CloudWatch Logs log group which stores CloudTrail events. |
+| cloudtrail_arn | The Amazon Resource Name of the trail |
+| cloudtrail_home_region | The region in which the trail was created. |
+| cloudtrail_id | The name of the trail |
+| s3_id | The Name of s3 bucket. |
 | tags | A mapping of tags to assign to the resource. |
 
 

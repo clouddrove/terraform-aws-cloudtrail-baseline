@@ -1,3 +1,14 @@
+## Managed By : CloudDrove
+## Copyright @ CloudDrove. All Right Reserved.
+
+
+data "aws_caller_identity" "current" {}
+data "aws_region" "current" {}
+
+#Module      : Label
+#Description : This terraform module is designed to generate consistent label names and
+#              tags for resources. You can use terraform-labels to implement a strict
+#              naming convention
 module "labels" {
   source = "git::https://github.com/clouddrove/terraform-labels.git?ref=tags/0.12.0"
 
@@ -7,10 +18,8 @@ module "labels" {
   label_order = var.label_order
 }
 
-data "aws_caller_identity" "current" {}
-data "aws_region" "current" {}
-
-
+#Module      : AWS_CLOUDWATCH_LOG_GROUP
+#Description : Provides a CloudWatch Log Group resource.
 resource "aws_cloudwatch_log_group" "cloudtrail_events" {
   count             = var.enabled ? 1 : 0
   name              = var.cloudwatch_logs_group_name
@@ -28,8 +37,8 @@ data "aws_iam_policy_document" "cloudwatch_delivery_assume_policy" {
   }
 }
 
-# ----------------------------------------------------------------------------------------------------------------------------------------
-
+#Module      : AWS_IAM_ROLE
+#Description : Provides an IAM role.
 resource "aws_iam_role" "cloudwatch_delivery" {
   count              = var.enabled ? 1 : 0
   name               = var.iam_role_name
@@ -38,6 +47,8 @@ resource "aws_iam_role" "cloudwatch_delivery" {
   tags = module.labels.tags
 }
 
+#Module      : AWS_IAM_ROLE
+#Description : Provides an IAM role policy.
 resource "aws_iam_role_policy" "cloudwatch_delivery_policy" {
   count  = var.enabled ? 1 : 0
   name   = var.iam_role_policy_name
@@ -59,7 +70,8 @@ data "aws_iam_policy_document" "cloudwatch_delivery_policy" {
   }
 }
 
-
+# Module      : KMS KEY
+# Description : This terraform module creates a KMS Customer Master Key (CMK) and its alias.
 module "kms_key" {
   source = "git::https://github.com/clouddrove/terraform-aws-kms.git?ref=tags/0.12.1"
 
@@ -181,6 +193,9 @@ data "aws_iam_policy_document" "cloudtrail_key_policy" {
   }
 }
 
+# Module      : S3 BUCKET
+# Description : Terraform module to create default S3 bucket with logging and encryption
+#               type specific features.
 module "s3_bucket" {
   source = "git::https://github.com/clouddrove/terraform-aws-s3.git?ref=tags/0.12.2"
 
@@ -247,6 +262,9 @@ locals {
   is_cloudtrail_enabled = local.is_individual_account || local.is_master_account
 }
 
+#Module      : CLOUDTRAIL
+#Description : Terraform module to provision an AWS CloudTrail with encrypted S3 bucket.
+#              This bucket is used to store CloudTrail logs.
 module "cloudtrail" {
   source = "git::https://github.com/clouddrove/terraform-aws-cloudtrail.git?ref=tags/0.12.2"
 
