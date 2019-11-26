@@ -16,7 +16,12 @@ output "cloudtrail_home_region" {
 
 output "s3_id" {
   value       = module.s3_bucket.id
-  description = "The Name of s3 bucket."
+  description = "The Name of S3 bucket."
+}
+
+output "s3_arn" {
+  value       = module.s3_bucket.arn
+  description = "The ARN of S3 bucket."
 }
 
 output "tags" {
