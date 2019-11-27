@@ -123,7 +123,9 @@ Here is an example of how you can use this module in your inventory structure:
 | cloudtrail_arn | The Amazon Resource Name of the trail |
 | cloudtrail_home_region | The region in which the trail was created. |
 | cloudtrail_id | The name of the trail |
-| s3_id | The Name of s3 bucket. |
+| log_group_name | The CloudWatch Logs log group which stores CloudTrail events. |
+| s3_arn | The ARN of S3 bucket. |
+| s3_id | The Name of S3 bucket. |
 | tags | A mapping of tags to assign to the resource. |
 
 

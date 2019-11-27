@@ -14,11 +14,10 @@ output "cloudtrail_home_region" {
   description = "The region in which the trail was created."
 }
 
-output "log_group" {
-  value       = var.enabled ? aws_cloudwatch_log_group.cloudtrail_events[0] : null
+output "log_group_name" {
+  value       = join("", aws_cloudwatch_log_group.cloudtrail_events.*.name)
   description = "The CloudWatch Logs log group which stores CloudTrail events."
 }
-
 
 output "s3_id" {
   value       = module.s3_bucket.id
