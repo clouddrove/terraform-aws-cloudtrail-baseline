@@ -91,6 +91,11 @@ variable "s3_bucket_name" {
   description = "The name of the S3 bucket which will store configuration snapshots."
 }
 
+variable "key_arn" {
+  type        = string
+  description = "The arn of the KMS."
+}
+
 variable "s3_key_prefix" {
   type        = string
   default     = ""

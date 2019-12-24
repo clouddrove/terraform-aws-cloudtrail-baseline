@@ -70,129 +70,6 @@ data "aws_iam_policy_document" "cloudwatch_delivery_policy" {
   }
 }
 
-# Module      : KMS KEY
-# Description : This terraform module creates a KMS Customer Master Key (CMK) and its alias.
-module "kms_key" {
-  source = "git::https://github.com/clouddrove/terraform-aws-kms.git?ref=tags/0.12.1"
-
-  name                    = "kms"
-  application             = var.application
-  environment             = var.environment
-  label_order             = ["environment", "name", "application"]
-  is_enabled              = var.enabled
-  description             = "KMS key for cloudtrail"
-  deletion_window_in_days = 7
-  enable_key_rotation     = true
-  alias                   = "alias/cloudtrail"
-  policy                  = data.aws_iam_policy_document.cloudtrail_key_policy.json
-}
-
-data "aws_iam_policy_document" "cloudtrail_key_policy" {
-  policy_id = "Key policy created by CloudTrail"
-
-  statement {
-    sid = "Enable IAM User Permissions"
-
-    principals {
-      type        = "AWS"
-      identifiers = [format("arn:aws:iam::%s:root", data.aws_caller_identity.current.account_id)]
-    }
-    actions   = ["kms:*"]
-    resources = ["*"]
-  }
-
-  statement {
-    sid = "Allow CloudTrail to encrypt logs"
-    principals {
-      type        = "Service"
-      identifiers = ["cloudtrail.amazonaws.com"]
-    }
-    actions   = ["kms:GenerateDataKey*"]
-    resources = ["*"]
-    condition {
-      test     = "StringLike"
-      variable = "kms:EncryptionContext:aws:cloudtrail:arn"
-      values = [
-      format("arn:aws:cloudtrail:*:%s:trail/*", data.aws_caller_identity.current.account_id)]
-    }
-  }
-
-  statement {
-    sid = "Allow CloudTrail to describe key"
-    principals {
-      type        = "Service"
-      identifiers = ["cloudtrail.amazonaws.com"]
-    }
-    actions   = ["kms:DescribeKey"]
-    resources = ["*"]
-  }
-
-  statement {
-    sid = "Allow principals in the account to decrypt log files"
-    principals {
-      type        = "AWS"
-      identifiers = ["*"]
-    }
-    actions = [
-      "kms:Decrypt",
-      "kms:ReEncryptFrom"
-    ]
-    resources = ["*"]
-    condition {
-      test     = "StringEquals"
-      variable = "kms:CallerAccount"
-      values   = [data.aws_caller_identity.current.account_id]
-    }
-    condition {
-      test     = "StringLike"
-      variable = "kms:EncryptionContext:aws:cloudtrail:arn"
-      values = [
-      format("arn:aws:cloudtrail:*:%s:trail/*", data.aws_caller_identity.current.account_id)]
-    }
-  }
-  statement {
-    sid = "Allow alias creation during setup"
-    principals {
-      type        = "AWS"
-      identifiers = ["*"]
-    }
-    actions   = ["kms:CreateAlias"]
-    resources = ["*"]
-    condition {
-      test     = "StringEquals"
-      variable = "kms:ViaService"
-      values   = ["ec2.${data.aws_region.current.name}.amazonaws.com"]
-    }
-    condition {
-      test     = "StringEquals"
-      variable = "kms:CallerAccount"
-      values   = [data.aws_caller_identity.current.account_id]
-    }
-  }
-  statement {
-    sid = "Enable cross account log decryption"
-    principals {
-      type        = "AWS"
-      identifiers = ["*"]
-    }
-    actions = [
-      "kms:Decrypt",
-      "kms:ReEncryptFrom"
-    ]
-    resources = ["*"]
-    condition {
-      test     = "StringEquals"
-      variable = "kms:CallerAccount"
-      values   = [data.aws_caller_identity.current.account_id]
-    }
-    condition {
-      test     = "StringLike"
-      variable = "kms:EncryptionContext:aws:cloudtrail:arn"
-      values   = [format("arn:aws:cloudtrail:*:%s:trail/*", data.aws_caller_identity.current.account_id)]
-    }
-  }
-}
-
 # Module      : S3 BUCKET
 # Description : Terraform module to create default S3 bucket with logging and encryption
 #               type specific features.
@@ -202,8 +79,9 @@ module "s3_bucket" {
   name        = var.s3_bucket_name
   application = var.application
   environment = var.environment
-  label_order = ["name", "application"]
+  label_order = ["name"]
 
+  create_bucket           = local.is_master_account
   bucket_enabled          = var.enabled
   region                  = data.aws_region.current.name
   versioning              = true
@@ -226,7 +104,7 @@ data "aws_iam_policy_document" "default" {
       "s3:GetBucketAcl",
     ]
 
-    resources = [format("arn:aws:s3:::%s-%s", var.s3_bucket_name, var.application), ]
+    resources = [format("arn:aws:s3:::%s", var.s3_bucket_name), ]
   }
 
   statement {
@@ -241,7 +119,7 @@ data "aws_iam_policy_document" "default" {
       "s3:PutObject",
     ]
 
-    resources = [format("arn:aws:s3:::%s-%s/*", var.s3_bucket_name, var.application), ]
+    resources = [format("arn:aws:s3:::%s/*", var.s3_bucket_name) ]
 
     condition {
       test     = "StringEquals"
@@ -273,13 +151,13 @@ module "cloudtrail" {
   environment                   = var.environment
   label_order                   = ["name", "application"]
   enabled_cloudtrail            = var.enabled
-  s3_bucket_name                = module.s3_bucket.id
+  s3_bucket_name                = format("%s",var.s3_bucket_name)
   enable_logging                = true
   enable_log_file_validation    = true
   include_global_service_events = true
   is_multi_region_trail         = true
-  is_organization_trail         = local.is_master_account
-  kms_key_id                    = module.kms_key.key_arn
+  is_organization_trail         = false
+  kms_key_id                    = var.key_arn
   cloud_watch_logs_group_arn    = aws_cloudwatch_log_group.cloudtrail_events[0].arn
   cloud_watch_logs_role_arn     = aws_iam_role.cloudwatch_delivery[0].arn
 }

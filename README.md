@@ -68,25 +68,8 @@ This module has a few dependencies:
 **IMPORTANT:** Since the `master` branch used in `source` varies based on new modifications, we suggest that you use the release versions [here](https://github.com/clouddrove/terraform-aws-cloudtrail-baseline/releases).
 
 
-### Simple Example
-Here is an example of how you can use this module in your inventory structure:
-```hcl
-      module "cloudtrail" {
-      source = "git::https://github.com/clouddrove/terraform-aws-cloudtrail-baseline.git?ref=tags/0.12.0"
-      name        = "trails"
-      application = "clouddrove"
-      environment = "test"
-      label_order = ["environment", "application", "name"]
-      enabled                           = true
-      iam_role_name                     = "CloudTrail-CloudWatch-Delivery-Role"
-      iam_role_policy_name              = "CloudTrail-CloudWatch-Delivery-Policy"
-      account_type                      = "individual"
-      key_deletion_window_in_days       = 10
-      cloudwatch_logs_retention_in_days = 365
-      cloudwatch_logs_group_name        = "cloudtrail-log-group"
-      s3_bucket_name                    = "logs-bucket"
-    }
-```
+### Examples
+    All examples are set in their particular folder example. For multi account setup we need to modify policy of KMS.
 
 
 
