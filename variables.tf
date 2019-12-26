@@ -48,11 +48,52 @@ variable "enabled" {
   description = "The boolean flag whether this module is enabled or not. No resources are created when set to false."
 }
 
+variable "lambda_enabled" {
+  type        = bool
+  default     = true
+  description = "Whether to create lambda for cloudtrail logs."
+}
 
 variable "cloudtrail_name" {
   type        = string
   default     = "cloudtrail-multi-region"
   description = "The name of the trail."
+}
+
+variable "slack_webhook" {
+  type        = string
+  default     = ""
+  description = "Webhook of slack."
+}
+
+variable "slack_channel" {
+  type        = string
+  default     = ""
+  description = "Channel of slack."
+}
+
+variable "additional_member_root_arn" {
+  type        = list
+  default     = []
+  description = "Additional member root user arn."
+}
+
+variable "additional_member_trail" {
+  type        = list
+  default     = []
+  description = "Additional member trails."
+}
+
+variable "additional_member_account_id" {
+  type        = list
+  default     = []
+  description = "Additional member account id."
+}
+
+variable "additional_s3_account_path_arn" {
+  type        = list
+  default     = []
+  description = "Additional path of s3 account."
 }
 
 variable "cloudwatch_logs_group_name" {
@@ -93,7 +134,14 @@ variable "s3_bucket_name" {
 
 variable "key_arn" {
   type        = string
+  default     = ""
   description = "The arn of the KMS."
+}
+
+variable "account_ids" {
+
+  default     = {}
+  description = "The account id of the accounts."
 }
 
 variable "s3_key_prefix" {

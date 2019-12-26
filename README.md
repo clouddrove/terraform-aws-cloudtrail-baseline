@@ -69,7 +69,73 @@ This module has a few dependencies:
 
 
 ### Examples
-    All examples are set in their particular folder example. For multi account setup we need to modify policy of KMS.
+  Here are some examples of how you can use this module in your inventory structure:
+
+### Individual Account
+```hcl
+  module "cloudtrail" {
+    source                            = "git::https://github.com/clouddrove/terraform-aws-cloudtrail-baseline.git?ref=tags/0.12.0"
+    name                              = "trails"
+    application                       = "clouddrove"
+    environment                       = "test"
+    label_order                       = ["environment", "application", "name"]
+    enabled                           = true
+    iam_role_name                     = "CloudTrail-CloudWatch-Delivery-Role"
+    iam_role_policy_name              = "CloudTrail-CloudWatch-Delivery-Policy"
+    account_type                      = "individual"
+    key_deletion_window_in_days       = 10
+    cloudwatch_logs_retention_in_days = 365
+    cloudwatch_logs_group_name        = "cloudtrail-log-group"
+    s3_bucket_name                    = "logs-bucket-clouddrove"
+  }
+```
+
+### Multi Account
+
+#### Master Account
+```hcl
+  module "cloudtrail" {
+    source                            = "git::https://github.com/clouddrove/terraform-aws-cloudtrail-baseline.git?ref=tags/0.12.0"
+    name                              = "trails"
+    application                       = "clouddrove"
+    environment                       = "test"
+    label_order                       = ["environment", "application", "name"]
+    enabled                           = true
+    iam_role_name                     = "CloudTrail-CloudWatch-Delivery-Role"
+    iam_role_policy_name              = "CloudTrail-CloudWatch-Delivery-Policy"
+    account_type                      = "master"
+    key_deletion_window_in_days       = 10
+    cloudwatch_logs_retention_in_days = 365
+    cloudwatch_logs_group_name        = "cloudtrail-log-group"
+    s3_bucket_name                    = "logs-bucket-clouddrove"
+    slack_webhook                     = "https://hooks.slack.com/services/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"
+    slack_channel                     = "testing"
+    additional_member_root_arn        = ["arn:aws:iam::xxxxxxxxxxx:root"]
+    additional_member_trail           = ["arn:aws:cloudtrail:*:xxxxxxxxxxx:trail/*"]
+    additional_member_account_id      = ["xxxxxxxxxxx"]
+    additional_s3_account_path_arn    = ["arn:aws:s3:::logs-bucket-clouddrove/AWSLogs/xxxxxxxxxxx/*"]
+  }
+```
+
+#### Member Account
+```hcl
+  module "cloudtrail" {
+    source                            = "git::https://github.com/clouddrove/terraform-aws-cloudtrail-baseline.git?ref=tags/0.12.0"
+    name                              = "trails"
+    application                       = "clouddrove"
+    environment                       = "test"
+    label_order                       = ["environment", "application", "name"]
+    enabled                           = true
+    iam_role_name                     = "CloudTrail-cd-Delivery-Role"
+    iam_role_policy_name              = "CloudTrail-cd-Delivery-Policy"
+    account_type                      = "member"
+    key_deletion_window_in_days       = 10
+    cloudwatch_logs_retention_in_days = 365
+    cloudwatch_logs_group_name        = "cloudtrail-log-group"
+    key_arn                           = "arn:aws:kms:eu-west-1:xxxxxxxxxxx:key/66cc5610-3b90-460b-a177-af89e119fdaa"
+    s3_bucket_name                    = "logs-bucket-clouddrove"
+  }
+```
 
 
 
