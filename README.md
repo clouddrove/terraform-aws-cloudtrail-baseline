@@ -7,7 +7,7 @@
     Terraform AWS Cloudtrail Baseline
 </h1>
 
-<p align="center" style="font-size: 1.2rem;">
+<p align="center" style="font-size: 1.2rem;"> 
     Terraform module to create an cloudtrail resource on AWS with S3 encryption with KMS key.
      </p>
 
@@ -38,7 +38,7 @@
 <hr>
 
 
-We eat, drink, sleep and most importantly love **DevOps**. We are working towards stratergies for standardizing architecture while ensuring security for the infrastructure. We are strong believer of the philosophy <b>Bigger problems are always solved by breaking them into smaller manageable problems</b>. Resonating with microservices architecture, it is considered best-practice to run database, cluster, storage in smaller <b>connected yet manageable pieces</b> within the infrastructure.
+We eat, drink, sleep and most importantly love **DevOps**. We are working towards strategies for standardizing architecture while ensuring security for the infrastructure. We are strong believer of the philosophy <b>Bigger problems are always solved by breaking them into smaller manageable problems</b>. Resonating with microservices architecture, it is considered best-practice to run database, cluster, storage in smaller <b>connected yet manageable pieces</b> within the infrastructure. 
 
 This module is basically combination of [Terraform open source](https://www.terraform.io/) and includes automatation tests and examples. It also helps to create and improve your infrastructure with minimalistic code instead of maintaining the whole infrastructure code yourself.
 
@@ -49,7 +49,7 @@ We have [*fifty plus terraform modules*][terraform_modules]. A few of them are c
 
 ## Prerequisites
 
-This module has a few dependencies:
+This module has a few dependencies: 
 
 - [Terraform 0.12](https://learn.hashicorp.com/terraform/getting-started/install.html)
 - [Go](https://golang.org/doc/install)
@@ -68,8 +68,7 @@ This module has a few dependencies:
 **IMPORTANT:** Since the `master` branch used in `source` varies based on new modifications, we suggest that you use the release versions [here](https://github.com/clouddrove/terraform-aws-cloudtrail-baseline/releases).
 
 
-### Examples
-  Here are some examples of how you can use this module in your inventory structure:
+Here are some examples of how you can use this module in your inventory structure:
 
 ### Individual Account
 ```hcl
@@ -83,6 +82,7 @@ This module has a few dependencies:
     iam_role_name                     = "CloudTrail-CloudWatch-Delivery-Role"
     iam_role_policy_name              = "CloudTrail-CloudWatch-Delivery-Policy"
     account_type                      = "individual"
+    filename                          = "./../../cloudtrail_slack_notification"
     key_deletion_window_in_days       = 10
     cloudwatch_logs_retention_in_days = 365
     cloudwatch_logs_group_name        = "cloudtrail-log-group"
@@ -112,6 +112,7 @@ This module has a few dependencies:
     s3_bucket_name                    = "logs-bucket-clouddrove"
     slack_webhook                     = "https://hooks.slack.com/services/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Jr46llqX"
     slack_channel                     = "testing"
+    filename                          = "./../../cloudtrail_slack_notification"
     additional_member_root_arn        = ["arn:aws:iam::xxxxxxxxxxx:root"]
     additional_member_trail           = ["arn:aws:cloudtrail:*:xxxxxxxxxxx:trail/*"]
     additional_member_account_id      = ["xxxxxxxxxxx"]
@@ -148,7 +149,12 @@ This module has a few dependencies:
 
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
+| account_ids | The account id of the accounts. | map | `<map>` | no |
 | account_type | The type of the AWS account. The possible values are `individual`, `master` and `member` . Specify `master` and `member` to set up centalized logging for multiple accounts in AWS Organization. Use individual` otherwise. | string | `individual` | no |
+| additional_member_account_id | Additional member account id. | list | `<list>` | no |
+| additional_member_root_arn | Additional member root user arn. | list | `<list>` | no |
+| additional_member_trail | Additional member trails. | list | `<list>` | no |
+| additional_s3_account_path_arn | Additional path of s3 account. | list | `<list>` | no |
 | application | Application (e.g. `cd` or `clouddrove`). | string | `` | no |
 | attributes | Additional attributes (e.g. `1`). | list | `<list>` | no |
 | cloudtrail_name | The name of the trail. | string | `cloudtrail-multi-region` | no |
@@ -157,14 +163,19 @@ This module has a few dependencies:
 | delimiter | Delimiter to be used between `organization`, `environment`, `name` and `attributes`. | string | `-` | no |
 | enabled | The boolean flag whether this module is enabled or not. No resources are created when set to false. | bool | `true` | no |
 | environment | Environment (e.g. `prod`, `dev`, `staging`). | string | `` | no |
+| filename | The path of directory of code. | string | `` | no |
 | iam_role_name | The name of the IAM Role to be used by CloudTrail to delivery logs to CloudWatch Logs group. | string | `CloudTrail-CloudWatch-Delivery-Role` | no |
 | iam_role_policy_name | The name of the IAM Role Policy to be used by CloudTrail to delivery logs to CloudWatch Logs group. | string | `CloudTrail-CloudWatch-Delivery-Policy` | no |
 | is_organization_trail | Specifies whether the trail is an AWS Organizations trail. Organization trails log events for the master account and all member accounts. Can only be created in the organization master account. | bool | `false` | no |
+| key_arn | The arn of the KMS. | string | `` | no |
 | key_deletion_window_in_days | Duration in days after which the key is deleted after destruction of the resource, must be between 7 and 30 days. Defaults to 30 days. | number | `10` | no |
 | label_order | Label order, e.g. `name`,`application`. | list | `<list>` | no |
+| lambda_enabled | Whether to create lambda for cloudtrail logs. | bool | `true` | no |
 | name | Name  (e.g. `app` or `cluster`). | string | `` | no |
 | s3_bucket_name | The name of the S3 bucket which will store configuration snapshots. | string | - | yes |
 | s3_key_prefix | The prefix for the specified S3 bucket. | string | `` | no |
+| slack_channel | Channel of slack. | string | `` | no |
+| slack_webhook | Webhook of slack. | string | `` | no |
 | tags | Additional tags (e.g. map(`BusinessUnit`,`XYZ`). | map | `<map>` | no |
 
 ## Outputs
@@ -174,6 +185,7 @@ This module has a few dependencies:
 | cloudtrail_arn | The Amazon Resource Name of the trail |
 | cloudtrail_home_region | The region in which the trail was created. |
 | cloudtrail_id | The name of the trail |
+| kms_arn | The ARN of KMS key. |
 | log_group_name | The CloudWatch Logs log group which stores CloudTrail events. |
 | s3_arn | The ARN of S3 bucket. |
 | s3_id | The Name of S3 bucket. |
@@ -183,7 +195,7 @@ This module has a few dependencies:
 
 
 ## Testing
-In this module testing is performed with [terratest](https://github.com/gruntwork-io/terratest) and it creates a small piece of infrastructure, matches the output like ARN, ID and Tags name etc and destroy infrastructure in your AWS account. This testing is written in GO, so you need a [GO environment](https://golang.org/doc/install) in your system.
+In this module testing is performed with [terratest](https://github.com/gruntwork-io/terratest) and it creates a small piece of infrastructure, matches the output like ARN, ID and Tags name etc and destroy infrastructure in your AWS account. This testing is written in GO, so you need a [GO environment](https://golang.org/doc/install) in your system. 
 
 You need to run the following command in the testing folder:
 ```hcl
@@ -192,7 +204,7 @@ You need to run the following command in the testing folder:
 
 
 
-## Feedback
+## Feedback 
 If you come accross a bug or have any feedback, please log it in our [issue tracker](https://github.com/clouddrove/terraform-aws-cloudtrail-baseline/issues), or feel free to drop us an email at [hello@clouddrove.com](mailto:hello@clouddrove.com).
 
 If you have found it worth your time, go ahead and give us a ★ on [our GitHub](https://github.com/clouddrove/terraform-aws-cloudtrail-baseline)!

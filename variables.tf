@@ -114,6 +114,12 @@ variable "iam_role_name" {
   description = "The name of the IAM Role to be used by CloudTrail to delivery logs to CloudWatch Logs group."
 }
 
+variable "filename" {
+  type        = string
+  default     = ""
+  description = "The path of directory of code."
+}
+
 variable "iam_role_policy_name" {
   type        = string
   default     = "CloudTrail-CloudWatch-Delivery-Policy"

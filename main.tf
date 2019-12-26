@@ -378,7 +378,7 @@ module "cloudtrail-slack-notification" {
   enabled     = var.lambda_enabled && local.is_cloudtrail_enabled
   bucket_arn  = format("arn:aws:s3:::%s", var.s3_bucket_name)
   bucket_name = var.s3_bucket_name
-  filename    = "./../../cloudtrail_slack_notification"
+  filename    = var.filename
   variables = {
     SLACK_WEBHOOK     = var.slack_webhook
     SLACK_CHANNEL     = var.slack_channel
