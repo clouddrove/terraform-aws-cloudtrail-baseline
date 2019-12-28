@@ -18,6 +18,74 @@ module "labels" {
   label_order = var.label_order
 }
 
+
+# Module      : S3 BUCKET
+# Description : Terraform module to create default S3 bucket with logging and encryption
+#               type specific features.
+module "s3_bucket" {
+  source = "git::https://github.com/clouddrove/terraform-aws-s3.git?ref=tags/0.12.2"
+
+  name        = var.s3_bucket_name
+  application = var.application
+  environment = var.environment
+  label_order = ["name"]
+
+  create_bucket           = local.is_cloudtrail_enabled
+  bucket_enabled          = var.enabled
+  region                  = data.aws_region.current.name
+  versioning              = true
+  acl                     = "log-delivery-write"
+  bucket_policy           = true
+  aws_iam_policy_document = data.aws_iam_policy_document.default.json
+  force_destroy           = true
+}
+
+data "aws_iam_policy_document" "default" {
+  statement {
+    sid = "AWSCloudTrailAclCheck"
+
+    principals {
+      type        = "Service"
+      identifiers = ["cloudtrail.amazonaws.com"]
+    }
+
+    actions = [
+      "s3:GetBucketAcl",
+    ]
+
+    resources = [format("arn:aws:s3:::%s", var.s3_bucket_name), ]
+  }
+
+  statement {
+    sid = "AWSCloudTrailWrite"
+
+    principals {
+      type        = "Service"
+      identifiers = ["cloudtrail.amazonaws.com"]
+    }
+
+    actions = [
+      "s3:PutObject",
+    ]
+
+    resources = compact(
+      concat(
+        [format("arn:aws:s3:::%s/AWSLogs/%s/*", var.s3_bucket_name, data.aws_caller_identity.current.account_id)],
+        var.additional_s3_account_path_arn
+      )
+    )
+
+    condition {
+      test     = "StringEquals"
+      variable = "s3:x-amz-acl"
+
+      values = [
+        "bucket-owner-full-control",
+      ]
+    }
+  }
+}
+
 #Module      : AWS_CLOUDWATCH_LOG_GROUP
 #Description : Provides a CloudWatch Log Group resource.
 resource "aws_cloudwatch_log_group" "cloudtrail_events" {
@@ -271,72 +339,6 @@ data "aws_iam_policy_document" "cloudtrail_key_policy" {
   }
 }
 
-# Module      : S3 BUCKET
-# Description : Terraform module to create default S3 bucket with logging and encryption
-#               type specific features.
-module "s3_bucket" {
-  source = "git::https://github.com/clouddrove/terraform-aws-s3.git?ref=tags/0.12.2"
-
-  name        = var.s3_bucket_name
-  application = var.application
-  environment = var.environment
-  label_order = ["name"]
-
-  create_bucket           = local.is_cloudtrail_enabled
-  bucket_enabled          = var.enabled
-  region                  = data.aws_region.current.name
-  versioning              = true
-  acl                     = "log-delivery-write"
-  bucket_policy           = true
-  aws_iam_policy_document = data.aws_iam_policy_document.default.json
-  force_destroy           = true
-}
-
-data "aws_iam_policy_document" "default" {
-  statement {
-    sid = "AWSCloudTrailAclCheck"
-
-    principals {
-      type        = "Service"
-      identifiers = ["cloudtrail.amazonaws.com"]
-    }
-
-    actions = [
-      "s3:GetBucketAcl",
-    ]
-
-    resources = [format("arn:aws:s3:::%s", var.s3_bucket_name), ]
-  }
-
-  statement {
-    sid = "AWSCloudTrailWrite"
-
-    principals {
-      type        = "Service"
-      identifiers = ["cloudtrail.amazonaws.com"]
-    }
-
-    actions = [
-      "s3:PutObject",
-    ]
-
-    resources = compact(
-      concat(
-        [format("arn:aws:s3:::%s/AWSLogs/%s/*", var.s3_bucket_name, data.aws_caller_identity.current.account_id)],
-        var.additional_s3_account_path_arn
-      )
-    )
-
-    condition {
-      test     = "StringEquals"
-      variable = "s3:x-amz-acl"
-
-      values = [
-        "bucket-owner-full-control",
-      ]
-    }
-  }
-}
 
 locals {
   is_individual_account = var.account_type == "individual"
@@ -382,9 +384,9 @@ module "cloudtrail-slack-notification" {
   variables = {
     SLACK_WEBHOOK     = var.slack_webhook
     SLACK_CHANNEL     = var.slack_channel
-    EVENT_IGNORE_LIST = jsonencode(["^Describe*", "^Assume*", "^List*", "^Get*", "^Decrypt*", "^Lookup*", "^BatchGet*", "^CreateLogStream$", "^RenewRole$", "^REST.GET.OBJECT_LOCK_CONFIGURATION$", "TestEventPattern", "TestScheduleExpression", "CreateNetworkInterface", "ValidateTemplate"])
-    EVENT_ALERT_LIST  = jsonencode(["DetachRolePolicy", "ConsoleLogin"])
-    USER_IGNORE_LIST  = jsonencode(["^awslambda_*", "^aws-batch$", "^bamboo*", "^i-*", "^[0-9]*$", "^ecs-service-scheduler$", "^AutoScaling$", "^AWSCloudFormation$", "^CloudTrailBot$", "^SLRManagement$"])
-    SOURCE_LIST       = jsonencode(["signin.amazonaws.com"])
+    EVENT_IGNORE_LIST = var.EVENT_IGNORE_LIST
+    EVENT_ALERT_LIST  = var.EVENT_ALERT_LIST
+    USER_IGNORE_LIST  = var.USER_IGNORE_LIST
+    SOURCE_LIST       = var.SOURCE_LIST
   }
 }
