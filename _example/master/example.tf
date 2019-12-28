@@ -24,7 +24,7 @@ module "cloudtrail" {
   SOURCE_LIST       = jsonencode(["aws-sdk-go"])
 
   s3_bucket_name                 = "logs-bucket-clouddrove"
-  slack_webhook                  = "https://hooks.slack.com/services/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tJr46llqX"
+  slack_webhook                  = "https://hooks.slack.com/services/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46llqX"
   slack_channel                  = "testing"
   additional_member_root_arn     = ["arn:aws:iam::xxxxxxxxxx:root"]
   additional_member_trail        = ["arn:aws:cloudtrail:*:xxxxxxxxxx:trail/*"]
