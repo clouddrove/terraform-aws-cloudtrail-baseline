@@ -18,7 +18,8 @@ module "cloudtrail" {
   key_deletion_window_in_days       = 10
   cloudwatch_logs_retention_in_days = 365
   cloudwatch_logs_group_name        = "cloudtrail-log-group"
-  key_arn                           = "arn:aws:kms:eu-west-1:xxxxxxxxxx:key/66cc5610-3b90-460b-a177-af89e119fdaa"
+  key_arn                           = "arn:aws:kms:eu-west-1:xxxxxxxxxx:key/341af1b8-d181-4dd1-8d7b-638dec0d925e"
+  filename                          = "./../../cloudtrail_slack_notification"
 
   s3_bucket_name = "logs-bucket-clouddrove"
 }
