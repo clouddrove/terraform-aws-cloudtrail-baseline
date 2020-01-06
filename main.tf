@@ -141,9 +141,9 @@ data "aws_iam_policy_document" "cloudwatch_delivery_policy" {
 module "kms_key" {
   source = "git::https://github.com/clouddrove/terraform-aws-kms.git?ref=tags/0.12.2"
 
-  name                    = "kms"
-  application             = "clouddrove"
-  environment             = "test"
+  name                    = var.name
+  application             = var.application
+  environment             = var.environment
   label_order             = ["environment", "name", "application"]
   is_enabled              = true
   enabled                 = local.is_cloudtrail_enabled
