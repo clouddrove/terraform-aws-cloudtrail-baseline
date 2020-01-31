@@ -2,6 +2,9 @@ provider "aws" {
   region = "eu-west-1"
 }
 
+data "aws_caller_identity" "current" {}
+data "aws_region" "current" {}
+
 module "cloudtrail" {
   source = "./../../"
 
@@ -26,4 +29,50 @@ module "cloudtrail" {
   s3_bucket_name                 = "logs-bucket-clouddrove"
   slack_webhook                  = "https://hooks.slack.com/services/TEFGGGF0QZ/BPertgrSFGHTLAH/rCldcdrgreffdfsedg0jRSpZ7GVEtJr46llretqX"
   slack_channel                  = "testing"
+  s3_policy                      = data.aws_iam_policy_document.default.json
+}
+
+data "aws_iam_policy_document" "default" {
+  statement {
+    sid = "AWSCloudTrailAclCheck"
+
+    principals {
+      type        = "Service"
+      identifiers = ["cloudtrail.amazonaws.com"]
+    }
+
+    actions = [
+      "s3:GetBucketAcl",
+    ]
+
+    resources = ["arn:aws:s3:::logs-bucket-clouddrove"]
+  }
+
+  statement {
+    sid = "AWSCloudTrailWrite"
+
+    principals {
+      type        = "Service"
+      identifiers = ["cloudtrail.amazonaws.com"]
+    }
+
+    actions = [
+      "s3:PutObject",
+    ]
+
+    resources = compact(
+      concat(
+        [format("arn:aws:s3:::logs-bucket-clouddrove/AWSLogs/%s/*", data.aws_caller_identity.current.account_id)]
+      )
+    )
+
+    condition {
+      test     = "StringEquals"
+      variable = "s3:x-amz-acl"
+
+      values = [
+        "bucket-owner-full-control",
+      ]
+    }
+  }
 }

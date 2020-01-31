@@ -36,54 +36,8 @@ module "s3_bucket" {
   versioning              = true
   acl                     = "log-delivery-write"
   bucket_policy           = true
-  aws_iam_policy_document = data.aws_iam_policy_document.default.json
+  aws_iam_policy_document = var.s3_policy
   force_destroy           = true
-}
-
-data "aws_iam_policy_document" "default" {
-  statement {
-    sid = "AWSCloudTrailAclCheck"
-
-    principals {
-      type        = "Service"
-      identifiers = ["cloudtrail.amazonaws.com"]
-    }
-
-    actions = [
-      "s3:GetBucketAcl",
-    ]
-
-    resources = [format("arn:aws:s3:::%s", var.s3_bucket_name), ]
-  }
-
-  statement {
-    sid = "AWSCloudTrailWrite"
-
-    principals {
-      type        = "Service"
-      identifiers = ["cloudtrail.amazonaws.com"]
-    }
-
-    actions = [
-      "s3:PutObject",
-    ]
-
-    resources = compact(
-      concat(
-        [format("arn:aws:s3:::%s/AWSLogs/%s/*", var.s3_bucket_name, data.aws_caller_identity.current.account_id)],
-        var.additional_s3_account_path_arn
-      )
-    )
-
-    condition {
-      test     = "StringEquals"
-      variable = "s3:x-amz-acl"
-
-      values = [
-        "bucket-owner-full-control",
-      ]
-    }
-  }
 }
 
 #Module      : AWS_CLOUDWATCH_LOG_GROUP

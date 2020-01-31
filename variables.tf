@@ -191,3 +191,8 @@ variable "SOURCE_LIST" {
   default     = ""
   description = "Event Source List which event is ignore."
 }
+
+variable "s3_policy" {
+  default     = []
+  description = "Policy of s3.."
+}
