@@ -73,7 +73,7 @@ Here are some examples of how you can use this module in your inventory structur
 ### Individual Account
 ```hcl
   module "cloudtrail" {
-    source                            = "git::https://github.com/clouddrove/terraform-aws-cloudtrail-baseline.git?ref=tags/0.12.0"
+    source                            = "git::https://github.com/clouddrove/terraform-aws-cloudtrail-baseline.git?ref=tags/0.12.6"
     name                              = "trails"
     application                       = "clouddrove"
     environment                       = "test"
@@ -85,7 +85,6 @@ Here are some examples of how you can use this module in your inventory structur
     key_deletion_window_in_days       = 10
     cloudwatch_logs_retention_in_days = 365
     cloudwatch_logs_group_name        = "cloudtrail-log-group"
-    filename                          = "./../../cloudtrail_slack_notification"
     EVENT_IGNORE_LIST                 = jsonencode(["^Describe*", "^Assume*", "^List*", "^Get*", "^Decrypt*", "^Lookup*", "^BatchGet*", "^CreateLogStream$", "^RenewRole$", "^REST.GET.OBJECT_LOCK_CONFIGURATION$", "TestEventPattern", "TestScheduleExpression", "CreateNetworkInterface", "ValidateTemplate"])
     EVENT_ALERT_LIST                  = jsonencode(["DetachRolePolicy", "ConsoleLogin"])
     USER_IGNORE_LIST                  = jsonencode(["^awslambda_*", "^aws-batch$", "^bamboo*", "^i-*", "^[0-9]*$", "^ecs-service-scheduler$", "^AutoScaling$", "^AWSCloudFormation$", "^CloudTrailBot$", "^SLRManagement$"])
@@ -101,7 +100,7 @@ Here are some examples of how you can use this module in your inventory structur
 #### Master Account
 ```hcl
   module "cloudtrail" {
-    source                            = "git::https://github.com/clouddrove/terraform-aws-cloudtrail-baseline.git?ref=tags/0.12.0"
+    source                            = "git::https://github.com/clouddrove/terraform-aws-cloudtrail-baseline.git?ref=tags/0.12.6"
     name                              = "trails"
     application                       = "clouddrove"
     environment                       = "test"
@@ -116,7 +115,6 @@ Here are some examples of how you can use this module in your inventory structur
     s3_bucket_name                    = "logs-bucket-clouddrove"
     slack_webhook                     = "https://hooks.slack.com/services/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Jr46llqX"
     slack_channel                     = "testing"
-    filename                          = "./../../cloudtrail_slack_notification"
     EVENT_IGNORE_LIST                 = jsonencode(["^Describe*", "^Assume*", "^List*", "^Get*", "^Decrypt*", "^Lookup*", "^BatchGet*", "^CreateLogStream$", "^RenewRole$", "^REST.GET.OBJECT_LOCK_CONFIGURATION$", "TestEventPattern", "TestScheduleExpression", "CreateNetworkInterface", "ValidateTemplate"])
     EVENT_ALERT_LIST                  = jsonencode(["DetachRolePolicy", "ConsoleLogin"])
     USER_IGNORE_LIST                  = jsonencode(["^awslambda_*", "^aws-batch$", "^bamboo*", "^i-*", "^[0-9]*$", "^ecs-service-scheduler$", "^AutoScaling$", "^AWSCloudFormation$", "^CloudTrailBot$", "^SLRManagement$"])
@@ -131,7 +129,7 @@ Here are some examples of how you can use this module in your inventory structur
 #### Member Account
 ```hcl
   module "cloudtrail" {
-    source                            = "git::https://github.com/clouddrove/terraform-aws-cloudtrail-baseline.git?ref=tags/0.12.0"
+    source                            = "git::https://github.com/clouddrove/terraform-aws-cloudtrail-baseline.git?ref=tags/0.12.6"
     name                              = "trails"
     application                       = "clouddrove"
     environment                       = "test"
