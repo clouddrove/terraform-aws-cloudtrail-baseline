@@ -325,7 +325,7 @@ module "cloudtrail" {
 }
 
 module "cloudtrail-slack-notification" {
-  source = "git::https://github.com/clouddrove/terraform-aws-cloudtrail-slack-notification.git?ref=tags/0.12.1"
+  source = "git::https://github.com/clouddrove/terraform-aws-cloudtrail-slack-notification.git?ref=tags/0.12.2"
 
   name        = "cloudtrail-slack-notification"
   application = var.application
@@ -334,7 +334,6 @@ module "cloudtrail-slack-notification" {
   enabled     = var.lambda_enabled && local.is_cloudtrail_enabled
   bucket_arn  = format("arn:aws:s3:::%s", var.s3_bucket_name)
   bucket_name = var.s3_bucket_name
-  filename    = var.filename
   variables = {
     SLACK_WEBHOOK     = var.slack_webhook
     SLACK_CHANNEL     = var.slack_channel
