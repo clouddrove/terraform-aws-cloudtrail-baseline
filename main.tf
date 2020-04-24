@@ -16,6 +16,8 @@ module "labels" {
   application = var.application
   environment = var.environment
   label_order = var.label_order
+  managedby   = var.managedby
+
 }
 
 
