@@ -25,7 +25,7 @@ module "labels" {
 # Description : Terraform module to create default S3 bucket with logging and encryption
 #               type specific features.
 module "s3_bucket" {
-  source = "git::https://github.com/clouddrove/terraform-aws-s3.git?ref=tags/0.12.2"
+  source = "git::https://github.com/clouddrove/terraform-aws-s3.git?ref=tags/0.12.5"
 
   name                    = var.s3_bucket_name
   application             = var.application
@@ -95,7 +95,7 @@ data "aws_iam_policy_document" "cloudwatch_delivery_policy" {
 }
 
 module "kms_key" {
-  source = "git::https://github.com/clouddrove/terraform-aws-kms.git?ref=tags/0.12.2"
+  source = "git::https://github.com/clouddrove/terraform-aws-kms.git?ref=tags/0.12.4"
 
   name                    = var.name
   application             = var.application
