@@ -16,6 +16,8 @@ module "labels" {
   application = var.application
   environment = var.environment
   label_order = var.label_order
+  managedby   = var.managedby
+
 }
 
 
@@ -25,11 +27,11 @@ module "labels" {
 module "s3_bucket" {
   source = "git::https://github.com/clouddrove/terraform-aws-s3.git?ref=tags/0.12.2"
 
-  name        = var.s3_bucket_name
-  application = var.application
-  environment = var.environment
-  label_order = ["name"]
-
+  name                    = var.s3_bucket_name
+  application             = var.application
+  environment             = var.environment
+  label_order             = ["name"]
+  managedby               = var.managedby
   create_bucket           = local.is_cloudtrail_enabled
   bucket_enabled          = var.enabled
   region                  = data.aws_region.current.name
@@ -99,6 +101,7 @@ module "kms_key" {
   application             = var.application
   environment             = var.environment
   label_order             = ["environment", "name", "application"]
+  managedby               = var.managedby
   is_enabled              = true
   enabled                 = local.is_cloudtrail_enabled
   description             = "KMS key for cloudtrail"
@@ -312,6 +315,7 @@ module "cloudtrail" {
   application                   = var.application
   environment                   = var.environment
   label_order                   = ["name", "application"]
+  managedby                     = var.managedby
   enabled_cloudtrail            = var.enabled
   s3_bucket_name                = format("%s", var.s3_bucket_name)
   enable_logging                = true
@@ -330,6 +334,7 @@ module "cloudtrail-slack-notification" {
   name        = "cloudtrail-slack-notification"
   application = var.application
   environment = var.environment
+  managedby   = var.managedby
   label_order = ["environment", "name", "application"]
   enabled     = var.lambda_enabled && local.is_cloudtrail_enabled
   bucket_arn  = format("arn:aws:s3:::%s", var.s3_bucket_name)

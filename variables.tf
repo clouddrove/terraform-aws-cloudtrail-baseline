@@ -196,3 +196,9 @@ variable "s3_policy" {
   default     = []
   description = "Policy of s3.."
 }
+
+variable "managedby" {
+  type        = string
+  default     = "anmol@clouddrove.com"
+  description = "ManagedBy, eg 'CloudDrove' or 'AnmolNagpal'."
+}
