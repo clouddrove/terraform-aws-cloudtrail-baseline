@@ -25,7 +25,7 @@ module "labels" {
 # Description : Terraform module to create default S3 bucket with logging and encryption
 #               type specific features.
 module "s3_bucket" {
-  source = "git::https://github.com/clouddrove/terraform-aws-s3.git?ref=tags/0.12.5"
+  source = "git::https://github.com/clouddrove/terraform-aws-s3.git?ref=tags/0.12.6"
 
   name                    = var.s3_bucket_name
   application             = var.application
@@ -100,7 +100,7 @@ module "kms_key" {
   name                    = var.name
   application             = var.application
   environment             = var.environment
-  label_order             = ["environment", "name", "application"]
+  label_order             = var.label_order
   managedby               = var.managedby
   is_enabled              = true
   enabled                 = local.is_cloudtrail_enabled
@@ -335,7 +335,7 @@ module "cloudtrail-slack-notification" {
   application = var.application
   environment = var.environment
   managedby   = var.managedby
-  label_order = ["environment", "name", "application"]
+  label_order = var.label_order
   enabled     = var.lambda_enabled && local.is_cloudtrail_enabled
   bucket_arn  = format("arn:aws:s3:::%s", var.s3_bucket_name)
   bucket_name = var.s3_bucket_name
