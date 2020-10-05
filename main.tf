@@ -106,7 +106,7 @@ module "kms_key" {
   description             = "KMS key for cloudtrail"
   deletion_window_in_days = 7
   enable_key_rotation     = true
-  alias                   = "alias/cloudtrail"
+  alias                   = "alias/cloudtrail1"
   policy                  = data.aws_iam_policy_document.cloudtrail_key_policy.json
 }
 
@@ -308,7 +308,7 @@ locals {
 #Description : Terraform module to provision an AWS CloudTrail with encrypted S3 bucket.
 #              This bucket is used to store CloudTrail logs.
 module "cloudtrail" {
-  source = "git::https://github.com/clouddrove/terraform-aws-cloudtrail.git?ref=tags/0.12.3"
+  source = "git::https://github.com/clouddrove/terraform-aws-cloudtrail.git?ref=tags/0.12.5"
 
   name                          = "cloudtrail"
   application                   = var.application

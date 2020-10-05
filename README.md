@@ -38,7 +38,7 @@
 <hr>
 
 
-We eat, drink, sleep and most importantly love **DevOps**. We are working towards stratergies for standardizing architecture while ensuring security for the infrastructure. We are strong believer of the philosophy <b>Bigger problems are always solved by breaking them into smaller manageable problems</b>. Resonating with microservices architecture, it is considered best-practice to run database, cluster, storage in smaller <b>connected yet manageable pieces</b> within the infrastructure.
+We eat, drink, sleep and most importantly love **DevOps**. We are working towards strategies for standardizing architecture while ensuring security for the infrastructure. We are strong believer of the philosophy <b>Bigger problems are always solved by breaking them into smaller manageable problems</b>. Resonating with microservices architecture, it is considered best-practice to run database, cluster, storage in smaller <b>connected yet manageable pieces</b> within the infrastructure.
 
 This module is basically combination of [Terraform open source](https://www.terraform.io/) and includes automatation tests and examples. It also helps to create and improve your infrastructure with minimalistic code instead of maintaining the whole infrastructure code yourself.
 
@@ -51,7 +51,7 @@ We have [*fifty plus terraform modules*][terraform_modules]. A few of them are c
 
 This module has a few dependencies:
 
-- [Terraform 0.12](https://learn.hashicorp.com/terraform/getting-started/install.html)
+- [Terraform 0.13](https://learn.hashicorp.com/terraform/getting-started/install.html)
 - [Go](https://golang.org/doc/install)
 - [github.com/stretchr/testify/assert](https://github.com/stretchr/testify)
 - [github.com/gruntwork-io/terratest/modules/terraform](https://github.com/gruntwork-io/terratest)
@@ -73,7 +73,7 @@ Here are some examples of how you can use this module in your inventory structur
 ### Individual Account
 ```hcl
   module "cloudtrail" {
-    source                            = "git::https://github.com/clouddrove/terraform-aws-cloudtrail-baseline.git?ref=tags/0.12.6"
+    source                            = "git::https://github.com/clouddrove/terraform-aws-cloudtrail-baseline.git?ref=tags/0.12.12"
     name                              = "trails"
     application                       = "clouddrove"
     environment                       = "test"
@@ -100,7 +100,7 @@ Here are some examples of how you can use this module in your inventory structur
 #### Master Account
 ```hcl
   module "cloudtrail" {
-    source                            = "git::https://github.com/clouddrove/terraform-aws-cloudtrail-baseline.git?ref=tags/0.12.6"
+    source                            = "git::https://github.com/clouddrove/terraform-aws-cloudtrail-baseline.git?ref=tags/0.12.12"
     name                              = "trails"
     application                       = "clouddrove"
     environment                       = "test"
@@ -129,7 +129,7 @@ Here are some examples of how you can use this module in your inventory structur
 #### Member Account
 ```hcl
   module "cloudtrail" {
-    source                            = "git::https://github.com/clouddrove/terraform-aws-cloudtrail-baseline.git?ref=tags/0.12.6"
+    source                            = "git::https://github.com/clouddrove/terraform-aws-cloudtrail-baseline.git?ref=tags/0.12.12"
     name                              = "trails"
     application                       = "clouddrove"
     environment                       = "test"
@@ -155,52 +155,52 @@ Here are some examples of how you can use this module in your inventory structur
 
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
-| EVENT_ALERT_LIST | Event List which event is not ignore. | string | `` | no |
-| EVENT_IGNORE_LIST | Event List which event is ignore. | string | `` | no |
-| SOURCE_LIST | Event Source List which event is ignore. | string | `` | no |
-| USER_IGNORE_LIST | User List which event is ignore. | string | `` | no |
-| account_ids | The account id of the accounts. | map | `<map>` | no |
-| account_type | The type of the AWS account. The possible values are `individual`, `master` and `member` . Specify `master` and `member` to set up centalized logging for multiple accounts in AWS Organization. Use individual` otherwise. | string | `individual` | no |
-| additional_member_account_id | Additional member account id. | list | `<list>` | no |
-| additional_member_root_arn | Additional member root user arn. | list | `<list>` | no |
-| additional_member_trail | Additional member trails. | list | `<list>` | no |
-| additional_s3_account_path_arn | Additional path of s3 account. | list | `<list>` | no |
-| application | Application (e.g. `cd` or `clouddrove`). | string | `` | no |
-| attributes | Additional attributes (e.g. `1`). | list | `<list>` | no |
-| cloudtrail_name | The name of the trail. | string | `cloudtrail-multi-region` | no |
-| cloudwatch_logs_group_name | The name of CloudWatch Logs group to which CloudTrail events are delivered. | string | `iam_role_name` | no |
-| cloudwatch_logs_retention_in_days | Number of days to retain logs for. CIS recommends 365 days.  Possible values are: 0, 1, 3, 5, 7, 14, 30, 60, 90, 120, 150, 180, 365, 400, 545, 731, 1827, and 3653. Set to 0 to keep logs indefinitely. | number | `365` | no |
-| delimiter | Delimiter to be used between `organization`, `environment`, `name` and `attributes`. | string | `-` | no |
-| enabled | The boolean flag whether this module is enabled or not. No resources are created when set to false. | bool | `true` | no |
-| environment | Environment (e.g. `prod`, `dev`, `staging`). | string | `` | no |
-| filename | The path of directory of code. | string | `` | no |
-| iam_role_name | The name of the IAM Role to be used by CloudTrail to delivery logs to CloudWatch Logs group. | string | `CloudTrail-CloudWatch-Delivery-Role` | no |
-| iam_role_policy_name | The name of the IAM Role Policy to be used by CloudTrail to delivery logs to CloudWatch Logs group. | string | `CloudTrail-CloudWatch-Delivery-Policy` | no |
-| is_organization_trail | Specifies whether the trail is an AWS Organizations trail. Organization trails log events for the master account and all member accounts. Can only be created in the organization master account. | bool | `false` | no |
-| key_arn | The arn of the KMS. | string | `` | no |
-| key_deletion_window_in_days | Duration in days after which the key is deleted after destruction of the resource, must be between 7 and 30 days. Defaults to 30 days. | number | `10` | no |
-| label_order | Label order, e.g. `name`,`application`. | list | `<list>` | no |
-| lambda_enabled | Whether to create lambda for cloudtrail logs. | bool | `true` | no |
-| managedby | ManagedBy, eg 'CloudDrove' or 'AnmolNagpal'. | string | `anmol@clouddrove.com` | no |
-| name | Name  (e.g. `app` or `cluster`). | string | `` | no |
-| s3_bucket_name | The name of the S3 bucket which will store configuration snapshots. | string | - | yes |
-| s3_key_prefix | The prefix for the specified S3 bucket. | string | `` | no |
-| s3_policy | Policy of s3.. | list | `<list>` | no |
-| slack_channel | Channel of slack. | string | `` | no |
-| slack_webhook | Webhook of slack. | string | `` | no |
-| tags | Additional tags (e.g. map(`BusinessUnit`,`XYZ`). | map | `<map>` | no |
+| EVENT\_ALERT\_LIST | Event List which event is not ignore. | string | `""` | no |
+| EVENT\_IGNORE\_LIST | Event List which event is ignore. | string | `""` | no |
+| SOURCE\_LIST | Event Source List which event is ignore. | string | `""` | no |
+| USER\_IGNORE\_LIST | User List which event is ignore. | string | `""` | no |
+| account\_ids | The account id of the accounts. | map | `<map>` | no |
+| account\_type | The type of the AWS account. The possible values are `individual`, `master` and `member` . Specify `master` and `member` to set up centalized logging for multiple accounts in AWS Organization. Use individual` otherwise. | string | `"individual"` | no |
+| additional\_member\_account\_id | Additional member account id. | list | `<list>` | no |
+| additional\_member\_root\_arn | Additional member root user arn. | list | `<list>` | no |
+| additional\_member\_trail | Additional member trails. | list | `<list>` | no |
+| additional\_s3\_account\_path\_arn | Additional path of s3 account. | list | `<list>` | no |
+| application | Application \(e.g. `cd` or `clouddrove`\). | string | `""` | no |
+| attributes | Additional attributes \(e.g. `1`\). | list | `<list>` | no |
+| cloudtrail\_name | The name of the trail. | string | `"cloudtrail-multi-region"` | no |
+| cloudwatch\_logs\_group\_name | The name of CloudWatch Logs group to which CloudTrail events are delivered. | string | `"iam_role_name"` | no |
+| cloudwatch\_logs\_retention\_in\_days | Number of days to retain logs for. CIS recommends 365 days.  Possible values are: 0, 1, 3, 5, 7, 14, 30, 60, 90, 120, 150, 180, 365, 400, 545, 731, 1827, and 3653. Set to 0 to keep logs indefinitely. | number | `"365"` | no |
+| delimiter | Delimiter to be used between `organization`, `environment`, `name` and `attributes`. | string | `"-"` | no |
+| enabled | The boolean flag whether this module is enabled or not. No resources are created when set to false. | bool | `"true"` | no |
+| environment | Environment \(e.g. `prod`, `dev`, `staging`\). | string | `""` | no |
+| filename | The path of directory of code. | string | `""` | no |
+| iam\_role\_name | The name of the IAM Role to be used by CloudTrail to delivery logs to CloudWatch Logs group. | string | `"CloudTrail-CloudWatch-Delivery-Role"` | no |
+| iam\_role\_policy\_name | The name of the IAM Role Policy to be used by CloudTrail to delivery logs to CloudWatch Logs group. | string | `"CloudTrail-CloudWatch-Delivery-Policy"` | no |
+| is\_organization\_trail | Specifies whether the trail is an AWS Organizations trail. Organization trails log events for the master account and all member accounts. Can only be created in the organization master account. | bool | `"false"` | no |
+| key\_arn | The arn of the KMS. | string | `""` | no |
+| key\_deletion\_window\_in\_days | Duration in days after which the key is deleted after destruction of the resource, must be between 7 and 30 days. Defaults to 30 days. | number | `"10"` | no |
+| label\_order | Label order, e.g. `name`,`application`. | list | `<list>` | no |
+| lambda\_enabled | Whether to create lambda for cloudtrail logs. | bool | `"true"` | no |
+| managedby | ManagedBy, eg 'CloudDrove' or 'AnmolNagpal'. | string | `"anmol@clouddrove.com"` | no |
+| name | Name  \(e.g. `app` or `cluster`\). | string | `""` | no |
+| s3\_bucket\_name | The name of the S3 bucket which will store configuration snapshots. | string | n/a | yes |
+| s3\_key\_prefix | The prefix for the specified S3 bucket. | string | `""` | no |
+| s3\_policy | Policy of s3.. | list | `<list>` | no |
+| slack\_channel | Channel of slack. | string | `""` | no |
+| slack\_webhook | Webhook of slack. | string | `""` | no |
+| tags | Additional tags \(e.g. map\(`BusinessUnit`,`XYZ`\). | map | `<map>` | no |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| cloudtrail_arn | The Amazon Resource Name of the trail |
-| cloudtrail_home_region | The region in which the trail was created. |
-| cloudtrail_id | The name of the trail |
-| kms_arn | The ARN of KMS key. |
-| log_group_name | The CloudWatch Logs log group which stores CloudTrail events. |
-| s3_arn | The ARN of S3 bucket. |
-| s3_id | The Name of S3 bucket. |
+| cloudtrail\_arn | The Amazon Resource Name of the trail |
+| cloudtrail\_home\_region | The region in which the trail was created. |
+| cloudtrail\_id | The name of the trail |
+| kms\_arn | The ARN of KMS key. |
+| log\_group\_name | The CloudWatch Logs log group which stores CloudTrail events. |
+| s3\_arn | The ARN of S3 bucket. |
+| s3\_id | The Name of S3 bucket. |
 | tags | A mapping of tags to assign to the resource. |
 
 
