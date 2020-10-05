@@ -37,7 +37,7 @@ usage : |-
   ### Individual Account
   ```hcl
     module "cloudtrail" {
-      source                            = "git::https://github.com/clouddrove/terraform-aws-cloudtrail-baseline.git?ref=tags/0.12.6"
+      source                            = "git::https://github.com/clouddrove/terraform-aws-cloudtrail-baseline.git?ref=tags/0.12.12"
       name                              = "trails"
       application                       = "clouddrove"
       environment                       = "test"
@@ -64,7 +64,7 @@ usage : |-
   #### Master Account
   ```hcl
     module "cloudtrail" {
-      source                            = "git::https://github.com/clouddrove/terraform-aws-cloudtrail-baseline.git?ref=tags/0.12.6"
+      source                            = "git::https://github.com/clouddrove/terraform-aws-cloudtrail-baseline.git?ref=tags/0.12.12"
       name                              = "trails"
       application                       = "clouddrove"
       environment                       = "test"
@@ -93,7 +93,7 @@ usage : |-
   #### Member Account
   ```hcl
     module "cloudtrail" {
-      source                            = "git::https://github.com/clouddrove/terraform-aws-cloudtrail-baseline.git?ref=tags/0.12.6"
+      source                            = "git::https://github.com/clouddrove/terraform-aws-cloudtrail-baseline.git?ref=tags/0.12.12"
       name                              = "trails"
       application                       = "clouddrove"
       environment                       = "test"
