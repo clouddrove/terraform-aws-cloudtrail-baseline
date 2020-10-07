@@ -60,6 +60,12 @@ variable "secure_s3_enabled" {
   description = "Whether to create secure s3 for cloudtrail logs."
 }
 
+variable "mfa_delete" {
+  type        = bool
+  default     = false
+  description = "Whether to enable mfa_delete or not."
+}
+
 variable "cloudtrail_name" {
   type        = string
   default     = "cloudtrail-multi-region"

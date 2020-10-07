@@ -154,41 +154,46 @@ Here are some examples of how you can use this module in your inventory structur
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|:----:|:-----:|:-----:|
-| EVENT\_ALERT\_LIST | Event List which event is not ignore. | string | `""` | no |
-| EVENT\_IGNORE\_LIST | Event List which event is ignore. | string | `""` | no |
-| SOURCE\_LIST | Event Source List which event is ignore. | string | `""` | no |
-| USER\_IGNORE\_LIST | User List which event is ignore. | string | `""` | no |
-| account\_ids | The account id of the accounts. | map | `<map>` | no |
-| account\_type | The type of the AWS account. The possible values are `individual`, `master` and `member` . Specify `master` and `member` to set up centalized logging for multiple accounts in AWS Organization. Use individual` otherwise. | string | `"individual"` | no |
-| additional\_member\_account\_id | Additional member account id. | list | `<list>` | no |
-| additional\_member\_root\_arn | Additional member root user arn. | list | `<list>` | no |
-| additional\_member\_trail | Additional member trails. | list | `<list>` | no |
-| additional\_s3\_account\_path\_arn | Additional path of s3 account. | list | `<list>` | no |
-| application | Application \(e.g. `cd` or `clouddrove`\). | string | `""` | no |
-| attributes | Additional attributes \(e.g. `1`\). | list | `<list>` | no |
-| cloudtrail\_name | The name of the trail. | string | `"cloudtrail-multi-region"` | no |
-| cloudwatch\_logs\_group\_name | The name of CloudWatch Logs group to which CloudTrail events are delivered. | string | `"iam_role_name"` | no |
-| cloudwatch\_logs\_retention\_in\_days | Number of days to retain logs for. CIS recommends 365 days.  Possible values are: 0, 1, 3, 5, 7, 14, 30, 60, 90, 120, 150, 180, 365, 400, 545, 731, 1827, and 3653. Set to 0 to keep logs indefinitely. | number | `"365"` | no |
-| delimiter | Delimiter to be used between `organization`, `environment`, `name` and `attributes`. | string | `"-"` | no |
-| enabled | The boolean flag whether this module is enabled or not. No resources are created when set to false. | bool | `"true"` | no |
-| environment | Environment \(e.g. `prod`, `dev`, `staging`\). | string | `""` | no |
-| filename | The path of directory of code. | string | `""` | no |
-| iam\_role\_name | The name of the IAM Role to be used by CloudTrail to delivery logs to CloudWatch Logs group. | string | `"CloudTrail-CloudWatch-Delivery-Role"` | no |
-| iam\_role\_policy\_name | The name of the IAM Role Policy to be used by CloudTrail to delivery logs to CloudWatch Logs group. | string | `"CloudTrail-CloudWatch-Delivery-Policy"` | no |
-| is\_organization\_trail | Specifies whether the trail is an AWS Organizations trail. Organization trails log events for the master account and all member accounts. Can only be created in the organization master account. | bool | `"false"` | no |
-| key\_arn | The arn of the KMS. | string | `""` | no |
-| key\_deletion\_window\_in\_days | Duration in days after which the key is deleted after destruction of the resource, must be between 7 and 30 days. Defaults to 30 days. | number | `"10"` | no |
-| label\_order | Label order, e.g. `name`,`application`. | list | `<list>` | no |
-| lambda\_enabled | Whether to create lambda for cloudtrail logs. | bool | `"true"` | no |
-| managedby | ManagedBy, eg 'CloudDrove' or 'AnmolNagpal'. | string | `"anmol@clouddrove.com"` | no |
-| name | Name  \(e.g. `app` or `cluster`\). | string | `""` | no |
-| s3\_bucket\_name | The name of the S3 bucket which will store configuration snapshots. | string | n/a | yes |
-| s3\_key\_prefix | The prefix for the specified S3 bucket. | string | `""` | no |
-| s3\_policy | Policy of s3.. | list | `<list>` | no |
-| slack\_channel | Channel of slack. | string | `""` | no |
-| slack\_webhook | Webhook of slack. | string | `""` | no |
-| tags | Additional tags \(e.g. map\(`BusinessUnit`,`XYZ`\). | map | `<map>` | no |
+|------|-------------|------|---------|:--------:|
+| EVENT\_ALERT\_LIST | Event List which event is not ignore. | `string` | `""` | no |
+| EVENT\_IGNORE\_LIST | Event List which event is ignore. | `string` | `""` | no |
+| SOURCE\_LIST | Event Source List which event is ignore. | `string` | `""` | no |
+| USER\_IGNORE\_LIST | User List which event is ignore. | `string` | `""` | no |
+| account\_ids | The account id of the accounts. | `map` | `{}` | no |
+| account\_type | The type of the AWS account. The possible values are `individual`, `master` and `member` . Specify `master` and `member` to set up centalized logging for multiple accounts in AWS Organization. Use individual` otherwise.` | `string` | `"individual"` | no |
+| additional\_member\_account\_id | Additional member account id. | `list` | `[]` | no |
+| additional\_member\_root\_arn | Additional member root user arn. | `list` | `[]` | no |
+| additional\_member\_trail | Additional member trails. | `list` | `[]` | no |
+| additional\_s3\_account\_path\_arn | Additional path of s3 account. | `list` | `[]` | no |
+| application | Application (e.g. `cd` or `clouddrove`). | `string` | `""` | no |
+| attributes | Additional attributes (e.g. `1`). | `list` | `[]` | no |
+| cloudtrail\_name | The name of the trail. | `string` | `"cloudtrail-multi-region"` | no |
+| cloudwatch\_logs\_group\_name | The name of CloudWatch Logs group to which CloudTrail events are delivered. | `string` | `"iam_role_name"` | no |
+| cloudwatch\_logs\_retention\_in\_days | Number of days to retain logs for. CIS recommends 365 days.  Possible values are: 0, 1, 3, 5, 7, 14, 30, 60, 90, 120, 150, 180, 365, 400, 545, 731, 1827, and 3653. Set to 0 to keep logs indefinitely. | `number` | `365` | no |
+| delimiter | Delimiter to be used between `organization`, `environment`, `name` and `attributes`. | `string` | `"-"` | no |
+| enabled | The boolean flag whether this module is enabled or not. No resources are created when set to false. | `bool` | `true` | no |
+| environment | Environment (e.g. `prod`, `dev`, `staging`). | `string` | `""` | no |
+| filename | The path of directory of code. | `string` | `""` | no |
+| iam\_role\_name | The name of the IAM Role to be used by CloudTrail to delivery logs to CloudWatch Logs group. | `string` | `"CloudTrail-CloudWatch-Delivery-Role"` | no |
+| iam\_role\_policy\_name | The name of the IAM Role Policy to be used by CloudTrail to delivery logs to CloudWatch Logs group. | `string` | `"CloudTrail-CloudWatch-Delivery-Policy"` | no |
+| is\_organization\_trail | Specifies whether the trail is an AWS Organizations trail. Organization trails log events for the master account and all member accounts. Can only be created in the organization master account. | `bool` | `false` | no |
+| key\_arn | The arn of the KMS. | `string` | `""` | no |
+| key\_deletion\_window\_in\_days | Duration in days after which the key is deleted after destruction of the resource, must be between 7 and 30 days. Defaults to 30 days. | `number` | `10` | no |
+| kms\_master\_key\_id | The AWS KMS master key ID used for the SSE-KMS encryption. This can only be used when you set the value of sse\_algorithm as aws:kms. The default aws/s3 AWS KMS master key is used if this element is absent while the sse\_algorithm is aws:kms. | `string` | `""` | no |
+| label\_order | Label order, e.g. `name`,`application`. | `list` | `[]` | no |
+| lambda\_enabled | Whether to create lambda for cloudtrail logs. | `bool` | `true` | no |
+| managedby | ManagedBy, eg 'CloudDrove' or 'AnmolNagpal'. | `string` | `"anmol@clouddrove.com"` | no |
+| mfa\_delete | Whether to enable mfa\_delete or not. | `bool` | `false` | no |
+| name | Name  (e.g. `app` or `cluster`). | `string` | `""` | no |
+| s3\_bucket\_name | The name of the S3 bucket which will store cloudtrail logs. | `string` | n/a | yes |
+| s3\_key\_prefix | The prefix for the specified S3 bucket. | `string` | `""` | no |
+| s3\_log\_bucket\_name | The name of the S3 bucket which will store logs of bucket. | `string` | n/a | yes |
+| s3\_policy | Policy of s3.. | `list` | `[]` | no |
+| secure\_s3\_enabled | Whether to create secure s3 for cloudtrail logs. | `bool` | `true` | no |
+| slack\_channel | Channel of slack. | `string` | `""` | no |
+| slack\_webhook | Webhook of slack. | `string` | `""` | no |
+| sse\_algorithm | The server-side encryption algorithm to use. Valid values are AES256 and aws:kms. | `string` | `"AES256"` | no |
+| tags | Additional tags (e.g. map(`BusinessUnit`,`XYZ`). | `map` | `{}` | no |
 
 ## Outputs
 
