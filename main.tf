@@ -56,6 +56,7 @@ module "s3_bucket" {
   force_destroy           = true
   target_bucket           = module.s3_log_bucket.id
   target_prefix           = "logs"
+  mfa_delete              = var.mfa_delete
 }
 
 module "secure_s3_bucket" {
@@ -77,6 +78,7 @@ module "secure_s3_bucket" {
   kms_master_key_id                 = var.kms_master_key_id
   target_bucket                     = module.s3_log_bucket.id
   target_prefix                     = "logs"
+  mfa_delete                        = var.mfa_delete
 }
 
 #Module      : AWS_CLOUDWATCH_LOG_GROUP
