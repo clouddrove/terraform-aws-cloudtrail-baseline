@@ -17,28 +17,66 @@ module "labels" {
   environment = var.environment
   label_order = var.label_order
   managedby   = var.managedby
-
+  enabled     = var.enabled
 }
 
 
 # Module      : S3 BUCKET
 # Description : Terraform module to create default S3 bucket with logging and encryption
 #               type specific features.
+
+module "s3_log_bucket" {
+  source = "git::https://github.com/clouddrove/terraform-aws-s3.git?ref=tags/0.12.8"
+
+  name           = var.s3_log_bucket_name
+  application    = var.application
+  environment    = var.environment
+  label_order    = ["name"]
+  managedby      = var.managedby
+  create_bucket  = local.is_cloudtrail_enabled
+  bucket_enabled = var.enabled
+  versioning     = true
+  acl            = "log-delivery-write"
+}
+
 module "s3_bucket" {
-  source = "git::https://github.com/clouddrove/terraform-aws-s3.git?ref=tags/0.12.7"
+  source = "git::https://github.com/clouddrove/terraform-aws-s3.git?ref=tags/0.12.8"
 
   name                    = var.s3_bucket_name
   application             = var.application
   environment             = var.environment
   label_order             = ["name"]
   managedby               = var.managedby
-  create_bucket           = local.is_cloudtrail_enabled
-  bucket_enabled          = var.enabled
+  create_bucket           = local.is_cloudtrail_enabled && var.secure_s3_enabled == false
+  bucket_logging_enabled  = var.enabled && var.secure_s3_enabled == false
   versioning              = true
   acl                     = "log-delivery-write"
   bucket_policy           = true
   aws_iam_policy_document = var.s3_policy
   force_destroy           = true
+  target_bucket           = module.s3_log_bucket.id
+  target_prefix           = "logs"
+}
+
+module "secure_s3_bucket" {
+  source = "git::https://github.com/clouddrove/terraform-aws-s3.git?ref=tags/0.12.8"
+
+  name                              = var.s3_bucket_name
+  application                       = var.application
+  environment                       = var.environment
+  label_order                       = ["name"]
+  managedby                         = var.managedby
+  create_bucket                     = local.is_cloudtrail_enabled && var.secure_s3_enabled
+  bucket_logging_encryption_enabled = var.enabled && var.secure_s3_enabled
+  versioning                        = true
+  acl                               = "log-delivery-write"
+  bucket_policy                     = true
+  aws_iam_policy_document           = var.s3_policy
+  force_destroy                     = true
+  sse_algorithm                     = var.sse_algorithm
+  kms_master_key_id                 = var.kms_master_key_id
+  target_bucket                     = module.s3_log_bucket.id
+  target_prefix                     = "logs"
 }
 
 #Module      : AWS_CLOUDWATCH_LOG_GROUP

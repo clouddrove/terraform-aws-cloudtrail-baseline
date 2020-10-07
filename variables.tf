@@ -54,6 +54,12 @@ variable "lambda_enabled" {
   description = "Whether to create lambda for cloudtrail logs."
 }
 
+variable "secure_s3_enabled" {
+  type        = bool
+  default     = true
+  description = "Whether to create secure s3 for cloudtrail logs."
+}
+
 variable "cloudtrail_name" {
   type        = string
   default     = "cloudtrail-multi-region"
@@ -133,9 +139,14 @@ variable "key_deletion_window_in_days" {
 
 }
 
+variable "s3_log_bucket_name" {
+  type        = string
+  description = "The name of the S3 bucket which will store logs of bucket."
+}
+
 variable "s3_bucket_name" {
   type        = string
-  description = "The name of the S3 bucket which will store configuration snapshots."
+  description = "The name of the S3 bucket which will store cloudtrail logs."
 }
 
 variable "key_arn" {
@@ -201,4 +212,16 @@ variable "managedby" {
   type        = string
   default     = "anmol@clouddrove.com"
   description = "ManagedBy, eg 'CloudDrove' or 'AnmolNagpal'."
+}
+
+variable "sse_algorithm" {
+  type        = string
+  default     = "AES256"
+  description = "The server-side encryption algorithm to use. Valid values are AES256 and aws:kms."
+}
+
+variable "kms_master_key_id" {
+  type        = string
+  default     = ""
+  description = "The AWS KMS master key ID used for the SSE-KMS encryption. This can only be used when you set the value of sse_algorithm as aws:kms. The default aws/s3 AWS KMS master key is used if this element is absent while the sse_algorithm is aws:kms."
 }

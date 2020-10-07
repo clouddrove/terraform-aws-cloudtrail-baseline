@@ -14,6 +14,7 @@ module "cloudtrail" {
   label_order = ["environment", "application", "name"]
 
   enabled                           = true
+  secure_s3_enabled                 = false
   iam_role_name                     = "CloudTrail-CloudWatch-Delivery-Role"
   iam_role_policy_name              = "CloudTrail-CloudWatch-Delivery-Policy"
   account_type                      = "individual"
@@ -25,10 +26,11 @@ module "cloudtrail" {
   USER_IGNORE_LIST                  = jsonencode(["^awslambda_*", "^aws-batch$", "^bamboo*", "^i-*", "^[0-9]*$", "^ecs-service-scheduler$", "^AutoScaling$", "^AWSCloudFormation$", "^CloudTrailBot$", "^SLRManagement$"])
   SOURCE_LIST                       = jsonencode(["aws-sdk-go"])
 
-  s3_bucket_name = "logs-bucket-clouddrove"
-  slack_webhook  = "https://hooks.slack.com/services/TEFGGGF0QZ/BPertgrSFGHTLAH/rCldcdrgreffdfsedg0jRSpZ7GVEtJr46llretqX"
-  slack_channel  = "testing"
-  s3_policy      = data.aws_iam_policy_document.default.json
+  s3_bucket_name     = "logs-bucket-clouddrove"
+  s3_log_bucket_name = "s3-logs-bucket-clouddrove"
+  slack_webhook      = "https://hooks.slack.com/services/TEFGGGF0QZ/BPertgrSFGHTLAH/rCldcdrgreffdfsedg0jRSpZ7GVEtJr46llretqX"
+  slack_channel      = "testing"
+  s3_policy          = data.aws_iam_policy_document.default.json
 }
 
 data "aws_iam_policy_document" "default" {
