@@ -75,8 +75,8 @@ module "secure_s3_bucket" {
   aws_iam_policy_document           = var.s3_policy
   force_destroy                     = true
   sse_algorithm                     = var.sse_algorithm
-  kms_master_key_id                 = var.kms_master_key_id
-  target_bucket                     = module.s3_log_bucket.id
+  kms_master_key_id                 = var.key_arn == "" ? module.kms_key.key_arn : var.key_arn
+  target_bucket                     = "aws:kms"
   target_prefix                     = "logs"
   mfa_delete                        = var.mfa_delete
 }
