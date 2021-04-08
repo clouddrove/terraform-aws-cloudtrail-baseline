@@ -10,10 +10,9 @@ data "aws_region" "current" {}
 #              tags for resources. You can use terraform-labels to implement a strict
 #              naming convention
 module "labels" {
-  source = "git::https://github.com/clouddrove/terraform-labels.git?ref=tags/0.12.0"
+  source = "git::https://github.com/clouddrove/terraform-labels.git?ref=tags/0.14.0"
 
   name        = var.name
-  application = var.application
   environment = var.environment
   label_order = var.label_order
   managedby   = var.managedby
@@ -26,10 +25,9 @@ module "labels" {
 #               type specific features.
 
 module "s3_log_bucket" {
-  source = "git::https://github.com/clouddrove/terraform-aws-s3.git?ref=tags/0.12.8"
+  source = "git::https://github.com/clouddrove/terraform-aws-s3.git?ref=tags/0.14.0"
 
   name           = var.s3_log_bucket_name
-  application    = var.application
   environment    = var.environment
   label_order    = ["name"]
   managedby      = var.managedby
@@ -40,10 +38,9 @@ module "s3_log_bucket" {
 }
 
 module "s3_bucket" {
-  source = "git::https://github.com/clouddrove/terraform-aws-s3.git?ref=tags/0.12.8"
+  source = "git::https://github.com/clouddrove/terraform-aws-s3.git?ref=tags/0.14.0"
 
   name                    = var.s3_bucket_name
-  application             = var.application
   environment             = var.environment
   label_order             = ["name"]
   managedby               = var.managedby
@@ -60,10 +57,9 @@ module "s3_bucket" {
 }
 
 module "secure_s3_bucket" {
-  source = "git::https://github.com/clouddrove/terraform-aws-s3.git?ref=tags/0.12.8"
+  source = "git::https://github.com/clouddrove/terraform-aws-s3.git?ref=tags/0.14.0"
 
   name                              = var.s3_bucket_name
-  application                       = var.application
   environment                       = var.environment
   label_order                       = ["name"]
   managedby                         = var.managedby
@@ -76,7 +72,7 @@ module "secure_s3_bucket" {
   force_destroy                     = true
   sse_algorithm                     = var.sse_algorithm
   kms_master_key_id                 = var.key_arn == "" ? module.kms_key.key_arn : var.key_arn
-  target_bucket                     = "aws:kms"
+  target_bucket                     = module.s3_log_bucket.id
   target_prefix                     = "logs"
   mfa_delete                        = var.mfa_delete
 }
@@ -134,10 +130,9 @@ data "aws_iam_policy_document" "cloudwatch_delivery_policy" {
 }
 
 module "kms_key" {
-  source = "git::https://github.com/clouddrove/terraform-aws-kms.git?ref=tags/0.12.4"
+  source = "git::https://github.com/clouddrove/terraform-aws-kms.git?ref=tags/0.14.0"
 
   name                    = var.name
-  application             = var.application
   environment             = var.environment
   label_order             = var.label_order
   managedby               = var.managedby
@@ -348,12 +343,11 @@ locals {
 #Description : Terraform module to provision an AWS CloudTrail with encrypted S3 bucket.
 #              This bucket is used to store CloudTrail logs.
 module "cloudtrail" {
-  source = "git::https://github.com/clouddrove/terraform-aws-cloudtrail.git?ref=tags/0.12.5"
+  source = "git::https://github.com/clouddrove/terraform-aws-cloudtrail.git?ref=tags/0.14.0"
 
   name                          = "cloudtrail"
-  application                   = var.application
   environment                   = var.environment
-  label_order                   = ["name", "application"]
+  label_order                   = ["name", "environment"]
   managedby                     = var.managedby
   enabled_cloudtrail            = var.enabled
   s3_bucket_name                = format("%s", var.s3_bucket_name)
@@ -368,10 +362,9 @@ module "cloudtrail" {
 }
 
 module "cloudtrail-slack-notification" {
-  source = "git::https://github.com/clouddrove/terraform-aws-cloudtrail-slack-notification.git?ref=tags/0.12.3"
+  source = "git::https://github.com/clouddrove/terraform-aws-cloudtrail-slack-notification.git?ref=tags/0.14.0"
 
   name        = "cloudtrail-slack-notification"
-  application = var.application
   environment = var.environment
   managedby   = var.managedby
   label_order = var.label_order

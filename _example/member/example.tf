@@ -7,9 +7,8 @@ module "cloudtrail" {
   source = "./../../"
 
   name        = "trails"
-  application = "clouddrove"
   environment = "test"
-  label_order = ["environment", "application", "name"]
+  label_order = ["environment", "name"]
 
   enabled                           = true
   iam_role_name                     = "CloudTrail-cd-Delivery-Role"
@@ -18,7 +17,8 @@ module "cloudtrail" {
   key_deletion_window_in_days       = 10
   cloudwatch_logs_retention_in_days = 365
   cloudwatch_logs_group_name        = "cloudtrail-log-group"
-  key_arn                           = "arn:aws:kms:eu-west-1:xxxxxxxxxx:key/341af1b8-d181-4dd1-8d7b-638dec0d925e"
+  key_arn                           = "arn:aws:kms:eu-west-1:xxxxxxxxxxx:key/9f3b66a0-3a38-4ed3-ab34-5e47c7e3604b"
 
-  s3_bucket_name = "logs-bucket-clouddrove"
+  s3_bucket_name     = "logs-bucket-cd"
+  s3_log_bucket_name = "logs-bucket-cd-logs"
 }

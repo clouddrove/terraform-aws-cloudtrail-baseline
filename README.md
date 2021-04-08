@@ -14,7 +14,7 @@
 <p align="center">
 
 <a href="https://www.terraform.io">
-  <img src="https://img.shields.io/badge/Terraform-v0.12-green" alt="Terraform">
+  <img src="https://img.shields.io/badge/Terraform-v0.14-green" alt="Terraform">
 </a>
 <a href="LICENSE.md">
   <img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="Licence">
@@ -51,7 +51,7 @@ We have [*fifty plus terraform modules*][terraform_modules]. A few of them are c
 
 This module has a few dependencies:
 
-- [Terraform 0.13](https://learn.hashicorp.com/terraform/getting-started/install.html)
+- [Terraform 0.14](https://learn.hashicorp.com/terraform/getting-started/install.html)
 - [Go](https://golang.org/doc/install)
 - [github.com/stretchr/testify/assert](https://github.com/stretchr/testify)
 - [github.com/gruntwork-io/terratest/modules/terraform](https://github.com/gruntwork-io/terratest)
@@ -73,7 +73,7 @@ Here are some examples of how you can use this module in your inventory structur
 ### Individual Account
 ```hcl
   module "cloudtrail" {
-    source                            = "git::https://github.com/clouddrove/terraform-aws-cloudtrail-baseline.git?ref=tags/0.12.12"
+    source                            = "git::https://github.com/clouddrove/terraform-aws-cloudtrail-baseline.git?ref=tags/0.14.0"
     name                              = "trails"
     application                       = "clouddrove"
     environment                       = "test"
@@ -100,11 +100,10 @@ Here are some examples of how you can use this module in your inventory structur
 #### Master Account
 ```hcl
   module "cloudtrail" {
-    source                            = "git::https://github.com/clouddrove/terraform-aws-cloudtrail-baseline.git?ref=tags/0.12.12"
+    source                            = "git::https://github.com/clouddrove/terraform-aws-cloudtrail-baseline.git?ref=tags/0.14.0"
     name                              = "trails"
-    application                       = "clouddrove"
     environment                       = "test"
-    label_order                       = ["environment", "application", "name"]
+    label_order                       = ["environment", "name"]
     enabled                           = true
     iam_role_name                     = "CloudTrail-CloudWatch-Delivery-Role"
     iam_role_policy_name              = "CloudTrail-CloudWatch-Delivery-Policy"
@@ -112,28 +111,31 @@ Here are some examples of how you can use this module in your inventory structur
     key_deletion_window_in_days       = 10
     cloudwatch_logs_retention_in_days = 365
     cloudwatch_logs_group_name        = "cloudtrail-log-group"
-    s3_bucket_name                    = "logs-bucket-clouddrove"
-    slack_webhook                     = "https://hooks.slack.com/services/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Jr46llqX"
-    slack_channel                     = "testing"
     EVENT_IGNORE_LIST                 = jsonencode(["^Describe*", "^Assume*", "^List*", "^Get*", "^Decrypt*", "^Lookup*", "^BatchGet*", "^CreateLogStream$", "^RenewRole$", "^REST.GET.OBJECT_LOCK_CONFIGURATION$", "TestEventPattern", "TestScheduleExpression", "CreateNetworkInterface", "ValidateTemplate"])
     EVENT_ALERT_LIST                  = jsonencode(["DetachRolePolicy", "ConsoleLogin"])
     USER_IGNORE_LIST                  = jsonencode(["^awslambda_*", "^aws-batch$", "^bamboo*", "^i-*", "^[0-9]*$", "^ecs-service-scheduler$", "^AutoScaling$", "^AWSCloudFormation$", "^CloudTrailBot$", "^SLRManagement$"])
     SOURCE_LIST                       = jsonencode(["aws-sdk-go"])
-    additional_member_root_arn        = ["arn:aws:iam::xxxxxxxxxxx:root"]
-    additional_member_trail           = ["arn:aws:cloudtrail:*:xxxxxxxxxxx:trail/*"]
-    additional_member_account_id      = ["xxxxxxxxxxx"]
-    additional_s3_account_path_arn    = ["arn:aws:s3:::logs-bucket-clouddrove/AWSLogs/xxxxxxxxxxx/*"]
+    s3_bucket_name                    = "logs-bucket-cd"
+    secure_s3_enabled                 = false
+    s3_log_bucket_name                = "logs-bucket-cd-logs"
+    sse_algorithm                     = "aws:kms"
+    slack_webhook                     = "https://hooks.slack.com/services/TEE0GHDK0F0QZ/B015frHRDBEUFHEVEG/dfdrfrefrwewqe"
+    slack_channel                     = "testing"
+    additional_member_root_arn        = ["arn:aws:iam::xxxxxxxxxxxx:root"]
+    additional_member_trail           = ["arn:aws:cloudtrail:*:xxxxxxxxxxxx:trail/*"]
+    additional_member_account_id      = ["xxxxxxxxxxxx"]
+    additional_s3_account_path_arn    = ["arn:aws:s3:::logs-bucket-clouddrove/AWSLogs/xxxxxxxxxxxx/*"]
+    s3_policy                         = data.aws_iam_policy_document.default.json
   }
 ```
 
 #### Member Account
 ```hcl
   module "cloudtrail" {
-    source                            = "git::https://github.com/clouddrove/terraform-aws-cloudtrail-baseline.git?ref=tags/0.12.12"
+    source                            = "git::https://github.com/clouddrove/terraform-aws-cloudtrail-baseline.git?ref=tags/0.14.0"
     name                              = "trails"
-    application                       = "clouddrove"
     environment                       = "test"
-    label_order                       = ["environment", "application", "name"]
+    label_order                       = ["environment", "name"]
     enabled                           = true
     iam_role_name                     = "CloudTrail-cd-Delivery-Role"
     iam_role_policy_name              = "CloudTrail-cd-Delivery-Policy"
@@ -141,8 +143,9 @@ Here are some examples of how you can use this module in your inventory structur
     key_deletion_window_in_days       = 10
     cloudwatch_logs_retention_in_days = 365
     cloudwatch_logs_group_name        = "cloudtrail-log-group"
-    key_arn                           = "arn:aws:kms:eu-west-1:xxxxxxxxxxx:key/66cc5610-3b90-460b-a177-af89e119fdaa"
-    s3_bucket_name                    = "logs-bucket-clouddrove"
+    key_arn                           = "arn:aws:kms:eu-west-1:xxxxxxxxxxx:key/9f3b66a0-3a38-4ed3-ab34-5e47c7e3604b"
+    s3_bucket_name                    = "logs-bucket-cd"
+    s3_log_bucket_name                = "logs-bucket-cd-logs"
   }
 ```
 
