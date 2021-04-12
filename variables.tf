@@ -6,12 +6,6 @@ variable "name" {
   description = "Name  (e.g. `app` or `cluster`)."
 }
 
-variable "application" {
-  type        = string
-  default     = ""
-  description = "Application (e.g. `cd` or `clouddrove`)."
-}
-
 variable "environment" {
   type        = string
   default     = ""
@@ -210,7 +204,7 @@ variable "SOURCE_LIST" {
 }
 
 variable "s3_policy" {
-  default     = []
+  default     = null
   description = "Policy of s3.."
 }
 
