@@ -72,6 +72,12 @@ variable "target_log_prefix" {
   description = "To specify a key prefix for log objects."
 }
 
+variable "target_log_bucket" {
+  type        = string
+  default     = ""
+  description = "To specify a bucket for log objects."
+}
+
 variable "cloudtrail_name" {
   type        = string
   default     = "cloudtrail-multi-region"

@@ -28,17 +28,18 @@ module "labels" {
 module "s3_log_bucket" {
   source = "git::https://github.com/clouddrove/terraform-aws-s3.git?ref=tags/0.12.8.1"
 
-  name           = var.s3_log_bucket_name
-  application    = var.application
-  environment    = var.environment
-  label_order    = ["name"]
-  managedby      = var.managedby
-  create_bucket  = local.is_cloudtrail_enabled
-  bucket_enabled = var.enabled
-  sse_algorithm  = var.sse_algorithm
+  name               = var.s3_log_bucket_name
+  application        = var.application
+  environment        = var.environment
+  label_order        = ["name"]
+  managedby          = var.managedby
+  create_bucket      = local.is_cloudtrail_enabled
+  bucket_enabled     = var.enabled
+  sse_algorithm      = var.sse_algorithm
+  target_bucket      = var.target_log_bucket
   target_log_prefix  = var.target_log_prefix
-  versioning     = true
-  acl            = "log-delivery-write"
+  versioning         = true
+  acl                = "log-delivery-write"
 }
 
 module "s3_bucket" {
