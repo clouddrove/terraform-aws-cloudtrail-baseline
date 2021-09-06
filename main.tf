@@ -26,7 +26,7 @@ module "labels" {
 #               type specific features.
 
 module "s3_log_bucket" {
-  source = "git::https://github.com/clouddrove/terraform-aws-s3.git?ref=tags/0.12.8"
+  source = "git::https://github.com/clouddrove/terraform-aws-s3.git?ref=tags/0.12.8.1"
 
   name           = var.s3_log_bucket_name
   application    = var.application
@@ -35,12 +35,14 @@ module "s3_log_bucket" {
   managedby      = var.managedby
   create_bucket  = local.is_cloudtrail_enabled
   bucket_enabled = var.enabled
+  sse_algorithm  = var.sse_algorithm
+  target_log_prefix  = var.target_log_prefix
   versioning     = true
   acl            = "log-delivery-write"
 }
 
 module "s3_bucket" {
-  source = "git::https://github.com/clouddrove/terraform-aws-s3.git?ref=tags/0.12.8"
+  source = "git::https://github.com/clouddrove/terraform-aws-s3.git?ref=tags/0.12.8.1"
 
   name                    = var.s3_bucket_name
   application             = var.application
@@ -57,6 +59,7 @@ module "s3_bucket" {
   target_bucket           = module.s3_log_bucket.id
   target_prefix           = "logs"
   mfa_delete              = var.mfa_delete
+  sse_algorithm           = var.sse_algorithm
 }
 
 module "secure_s3_bucket" {

@@ -66,6 +66,12 @@ variable "mfa_delete" {
   description = "Whether to enable mfa_delete or not."
 }
 
+variable "target_log_prefix" {
+  type        = string
+  default     = ""
+  description = "To specify a key prefix for log objects."
+}
+
 variable "cloudtrail_name" {
   type        = string
   default     = "cloudtrail-multi-region"
