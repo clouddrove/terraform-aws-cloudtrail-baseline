@@ -36,7 +36,7 @@ module "s3_log_bucket" {
   create_bucket      = local.is_cloudtrail_enabled
   bucket_enabled     = var.enabled
   sse_algorithm      = var.sse_algorithm
-  target_bucket      = var.target_log_bucket
+  target_log_bucket  = var.target_log_bucket
   target_log_prefix  = var.target_log_prefix
   versioning         = true
   acl                = "log-delivery-write"
