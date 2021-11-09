@@ -372,7 +372,7 @@ module "cloudtrail" {
 }
 
 module "cloudtrail-slack-notification" {
-  source = "git::https://github.com/clouddrove/terraform-aws-cloudtrail-slack-notification.git?ref=MAN-226"
+  source = "git::https://github.com/clouddrove/terraform-aws-cloudtrail-slack-notification.git?ref=tags/0.12.3.1"
 
   name                  = "cloudtrail-slack-notification"
   application           = var.application
