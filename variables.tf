@@ -19,13 +19,13 @@ variable "environment" {
 }
 
 variable "label_order" {
-  type        = list
+  type        = list(any)
   default     = []
   description = "Label order, e.g. `name`,`application`."
 }
 
 variable "attributes" {
-  type        = list
+  type        = list(any)
   default     = []
   description = "Additional attributes (e.g. `1`)."
 }
@@ -37,7 +37,7 @@ variable "delimiter" {
 }
 
 variable "tags" {
-  type        = map
+  type        = map(any)
   default     = {}
   description = "Additional tags (e.g. map(`BusinessUnit`,`XYZ`)."
 }
@@ -97,25 +97,25 @@ variable "slack_channel" {
 }
 
 variable "additional_member_root_arn" {
-  type        = list
+  type        = list(any)
   default     = []
   description = "Additional member root user arn."
 }
 
 variable "additional_member_trail" {
-  type        = list
+  type        = list(any)
   default     = []
   description = "Additional member trails."
 }
 
 variable "additional_member_account_id" {
-  type        = list
+  type        = list(any)
   default     = []
   description = "Additional member account id."
 }
 
 variable "additional_s3_account_path_arn" {
-  type        = list
+  type        = list(any)
   default     = []
   description = "Additional path of s3 account."
 }
@@ -242,4 +242,16 @@ variable "kms_master_key_id" {
   type        = string
   default     = ""
   description = "The AWS KMS master key ID used for the SSE-KMS encryption. This can only be used when you set the value of sse_algorithm as aws:kms. The default aws/s3 AWS KMS master key is used if this element is absent while the sse_algorithm is aws:kms."
+}
+
+variable "tracing_mode" {
+  type        = string
+  default     = null
+  description = "Whether to to sample and trace a subset of incoming requests with AWS X-Ray. Valid values are PassThrough and Active."
+}
+
+variable "attach_tracing_policy" {
+  type        = bool
+  default     = false
+  description = "Controls whether X-Ray tracing policy should be added to IAM role for Lambda Function"
 }
