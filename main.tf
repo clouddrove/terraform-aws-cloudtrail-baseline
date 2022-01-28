@@ -40,6 +40,7 @@ module "s3_log_bucket" {
   target_log_prefix = var.target_log_prefix
   versioning        = true
   acl               = "log-delivery-write"
+  lifecycle_days_to_expiration = var.lifecycle_days_to_expiration
 }
 
 module "s3_bucket" {
