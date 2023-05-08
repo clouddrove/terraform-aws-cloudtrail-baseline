@@ -345,17 +345,17 @@ locals {
 module "cloudtrail" {
   source = "git::https://github.com/clouddrove/terraform-aws-cloudtrail.git?ref=tags/0.14.0"
 
-  name                          = "cloudtrail"
+  name                          = var.name
   environment                   = var.environment
   label_order                   = ["name", "environment"]
   managedby                     = var.managedby
   enabled_cloudtrail            = var.enabled
   s3_bucket_name                = format("%s", var.s3_bucket_name)
-  enable_logging                = true
-  enable_log_file_validation    = true
-  include_global_service_events = true
-  is_multi_region_trail         = true
-  is_organization_trail         = false
+  enable_logging                = var.enable_logging
+  enable_log_file_validation    = var.enable_log_file_validation
+  include_global_service_events = var.include_global_service_events
+  is_multi_region_trail         = var.is_multi_region_trail
+  is_organization_trail         = var.is_organization_trail
   kms_key_id                    = var.key_arn == "" ? module.kms_key.key_arn : var.key_arn
   cloud_watch_logs_group_arn    = join("", aws_cloudwatch_log_group.cloudtrail_events.*.arn)
   cloud_watch_logs_role_arn     = join("", aws_iam_role.cloudwatch_delivery.*.arn)

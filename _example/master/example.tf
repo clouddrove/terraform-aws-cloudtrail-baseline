@@ -1,5 +1,5 @@
 provider "aws" {
-  region = "eu-west-1"
+  region = "us-east-1"
 }
 
 data "aws_caller_identity" "current" {}
@@ -30,6 +30,7 @@ module "cloudtrail" {
   sse_algorithm                  = "aws:kms"
   slack_webhook                  = "https://hooks.slack.com/services/TEE0GHDK0F0QZ/B015frHRDBEUFHEVEG/dfdrfrefrwewqe"
   slack_channel                  = "testing"
+  is_organization_trail          = true
   additional_member_root_arn     = ["arn:aws:iam::xxxxxxxxxxxx:root"]
   additional_member_trail        = ["arn:aws:cloudtrail:*:xxxxxxxxxxxx:trail/*"]
   additional_member_account_id   = ["xxxxxxxxxxxx"]
@@ -50,8 +51,17 @@ data "aws_iam_policy_document" "default" {
       "s3:GetBucketAcl"
     ]
 
-    resources = ["arn:aws:s3:::logs-bucket-cd"]
+    resources = ["arn:aws:s3:::test-cloudtrail-logs"]
+    condition {
+      test     = "StringEquals"
+      variable = "AWS:SourceArn"
+
+      values = [
+        "arn:aws:cloudtrail:us-east-1:156873913342:trail/cloudtrails-test"
+      ]
+    }
   }
+
 
   statement {
     sid = "AWSCloudTrailWrite"
@@ -65,9 +75,32 @@ data "aws_iam_policy_document" "default" {
       "s3:PutObject"
     ]
 
+    resources = ["arn:aws:s3:::test-cloudtrail-logs/AWSLogs/156873913342/*"]
+    condition {
+      test     = "StringEquals"
+      variable = "s3:x-amz-acl"
+
+      values = [
+        "bucket-owner-full-control"
+      ]
+    }
+  }  
+
+  statement {
+    sid = "AWSCloudTrailWrite20150319"
+
+    principals {
+      type        = "Service"
+      identifiers = ["cloudtrail.amazonaws.com"]
+    }
+
+    actions = [
+      "s3:*"
+    ]
+
     resources = compact(
       concat(
-        [format("arn:aws:s3:::logs-bucket-cd/AWSLogs/%s/*", data.aws_caller_identity.current.account_id), "arn:aws:s3:::logs-bucket-cd/AWSLogs/xxxxxxxxxxxx/*"]
+        [format("arn:aws:s3:::test-cloudtrail-logs/AWSLogs/%s/*", data.aws_caller_identity.current.account_id), "arn:aws:s3:::test-cloudtrail-logs/AWSLogs/156873913342/*"]
       )
     )
 
@@ -79,5 +112,13 @@ data "aws_iam_policy_document" "default" {
         "bucket-owner-full-control"
       ]
     }
+    condition {
+      test     = "StringEquals"
+      variable = "AWS:SourceArn"
+
+      values = [
+        "arn:aws:cloudtrail:us-east-1:156873913342:trail/cloudtrails-test"
+      ]
+    }    
   }
-}
+} 
