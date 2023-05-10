@@ -34,7 +34,7 @@ module "s3_log_bucket" {
   create_bucket  = local.is_cloudtrail_enabled
   bucket_enabled = var.enabled
   versioning     = true
-  acl            = "log-delivery-write"
+  acl            = "private"
 }
 
 module "s3_bucket" {
@@ -47,7 +47,7 @@ module "s3_bucket" {
   create_bucket           = local.is_cloudtrail_enabled && var.secure_s3_enabled == false
   bucket_logging_enabled  = var.enabled && var.secure_s3_enabled == false
   versioning              = true
-  acl                     = "log-delivery-write"
+  acl                     = "private"
   bucket_policy           = true
   aws_iam_policy_document = var.s3_policy
   force_destroy           = true
@@ -66,7 +66,7 @@ module "secure_s3_bucket" {
   create_bucket                     = local.is_cloudtrail_enabled && var.secure_s3_enabled
   bucket_logging_encryption_enabled = var.enabled && var.secure_s3_enabled
   versioning                        = true
-  acl                               = "log-delivery-write"
+  acl                               = "private"
   bucket_policy                     = true
   aws_iam_policy_document           = var.s3_policy
   force_destroy                     = true
@@ -141,7 +141,7 @@ module "kms_key" {
   description             = "KMS key for cloudtrail"
   deletion_window_in_days = 7
   enable_key_rotation     = true
-  alias                   = "alias/cloudtrail1"
+  alias                   = "alias/cloudtrail"
   policy                  = data.aws_iam_policy_document.cloudtrail_key_policy.json
 }
 
@@ -177,11 +177,17 @@ data "aws_iam_policy_document" "cloudtrail_key_policy" {
       variable = "kms:EncryptionContext:aws:cloudtrail:arn"
       values = compact(
         concat(
-          [format("arn:aws:cloudtrail:*:%s:trail/*", data.aws_caller_identity.current.account_id)],
-          var.additional_member_trail
+          [format("arn:aws:cloudtrail:*:%s:trail/*", data.aws_caller_identity.current.account_id)]
         )
       )
     }
+    condition {
+      test     = "StringEquals"
+      variable = "AWS:SourceArn"
+      values = [
+        "arn:aws:cloudtrail:us-east-1:156873913342:trail/<trail_Name>"
+      ]
+    }    
   }
 
   statement {
@@ -210,8 +216,7 @@ data "aws_iam_policy_document" "cloudtrail_key_policy" {
       variable = "kms:CallerAccount"
       values = compact(
         concat(
-          [data.aws_caller_identity.current.account_id],
-          var.additional_member_account_id
+          [data.aws_caller_identity.current.account_id]
         )
       )
     }
@@ -245,8 +250,7 @@ data "aws_iam_policy_document" "cloudtrail_key_policy" {
       values = compact(
         concat(
           [
-          data.aws_caller_identity.current.account_id],
-          var.additional_member_account_id
+          data.aws_caller_identity.current.account_id]
         )
       )
     }
@@ -267,8 +271,7 @@ data "aws_iam_policy_document" "cloudtrail_key_policy" {
       variable = "kms:CallerAccount"
       values = compact(
         concat(
-          [data.aws_caller_identity.current.account_id],
-          var.additional_member_account_id
+          [data.aws_caller_identity.current.account_id]
         )
       )
     }
@@ -277,8 +280,7 @@ data "aws_iam_policy_document" "cloudtrail_key_policy" {
       variable = "kms:EncryptionContext:aws:cloudtrail:arn"
       values = compact(
         concat(
-          [format("arn:aws:cloudtrail:*:%s:trail/*", data.aws_caller_identity.current.account_id)],
-          var.additional_member_trail
+          [format("arn:aws:cloudtrail:*:%s:trail/*", data.aws_caller_identity.current.account_id)]
         )
       )
     }
@@ -290,17 +292,16 @@ data "aws_iam_policy_document" "cloudtrail_key_policy" {
       type = "AWS"
       identifiers = compact(
         concat(
-          [format("arn:aws:iam::%s:root", data.aws_caller_identity.current.account_id)],
-          var.additional_member_root_arn
+          [format("arn:aws:iam::%s:root", data.aws_caller_identity.current.account_id)]
         )
       )
     }
     actions = [
-      "kms:Encrypt",
-      "kms:Decrypt",
-      "kms:ReEncrypt*",
-      "kms:GenerateDataKey*",
-      "kms:DescribeKey"
+    "kms:ReEncrypt*",
+    "kms:GenerateDataKey*",
+    "kms:Encrypt",
+    "kms:DescribeKey",
+    "kms:Decrypt"
     ]
     resources = ["*"]
   }
@@ -311,8 +312,7 @@ data "aws_iam_policy_document" "cloudtrail_key_policy" {
       type = "AWS"
       identifiers = compact(
         concat(
-          [format("arn:aws:iam::%s:root", data.aws_caller_identity.current.account_id)],
-          var.additional_member_root_arn
+          [format("arn:aws:iam::%s:root", data.aws_caller_identity.current.account_id)]
         )
       )
     }
