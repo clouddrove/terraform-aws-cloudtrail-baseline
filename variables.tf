@@ -173,6 +173,30 @@ variable "is_organization_trail" {
   description = "Specifies whether the trail is an AWS Organizations trail. Organization trails log events for the master account and all member accounts. Can only be created in the organization master account."
 }
 
+variable "is_multi_region_trail" {
+  type        = bool
+  default     = true
+  description = "Specifies whether the trail is an AWS Organizations trail. Organization trails log events for the master account and all member accounts. Can only be created in the organization master account."
+}
+
+variable "include_global_service_events" {
+  type        = bool
+  default     = true
+  description = "Specifies whether the trail is an AWS Organizations trail. Organization trails log events for the master account and all member accounts. Can only be created in the organization master account."
+}
+
+variable "enable_log_file_validation" {
+  type        = bool
+  default     = true
+  description = "Specifies whether the trail is an AWS Organizations trail. Organization trails log events for the master account and all member accounts. Can only be created in the organization master account."
+}
+
+variable "enable_logging" {
+  type        = bool
+  default     = true
+  description = "Specifies whether the trail is an AWS Organizations trail. Organization trails log events for the master account and all member accounts. Can only be created in the organization master account."
+}
+
 variable "account_type" {
   type        = string
   default     = "individual"
