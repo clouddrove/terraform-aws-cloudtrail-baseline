@@ -187,7 +187,7 @@ data "aws_iam_policy_document" "cloudtrail_key_policy" {
       values = [
         "arn:aws:cloudtrail:us-east-1:156873913342:trail/<trail_Name>"
       ]
-    }    
+    }
   }
 
   statement {
@@ -297,11 +297,11 @@ data "aws_iam_policy_document" "cloudtrail_key_policy" {
       )
     }
     actions = [
-    "kms:ReEncrypt*",
-    "kms:GenerateDataKey*",
-    "kms:Encrypt",
-    "kms:DescribeKey",
-    "kms:Decrypt"
+      "kms:ReEncrypt*",
+      "kms:GenerateDataKey*",
+      "kms:Encrypt",
+      "kms:DescribeKey",
+      "kms:Decrypt"
     ]
     resources = ["*"]
   }

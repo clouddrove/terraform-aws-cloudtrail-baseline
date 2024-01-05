@@ -9,7 +9,6 @@ module "cloudtrail" {
   source = "./../../"
 
   name        = "trails"
-  application = "clouddrove"
   environment = "test"
   label_order = ["environment", "application", "name"]
 
