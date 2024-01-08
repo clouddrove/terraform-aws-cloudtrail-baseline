@@ -343,7 +343,7 @@ locals {
 #Description : Terraform module to provision an AWS CloudTrail with encrypted S3 bucket.
 #              This bucket is used to store CloudTrail logs.
 module "cloudtrail" {
-  source = "git::https://github.com/clouddrove/terraform-aws-cloudtrail.git?ref=tags/0.14.0"
+  source = "git::https://github.com/clouddrove/terraform-aws-cloudtrail.git?ref=tags/1.4.0"
 
   name                          = var.name
   environment                   = var.environment
