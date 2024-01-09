@@ -15,7 +15,7 @@ output "cloudtrail_home_region" {
 }
 
 output "log_group_name" {
-  value       = join("", aws_cloudwatch_log_group.cloudtrail_events.*.name)
+  value       = join("", aws_cloudwatch_log_group.cloudtrail_events[*].name)
   description = "The CloudWatch Logs log group which stores CloudTrail events."
 }
 
