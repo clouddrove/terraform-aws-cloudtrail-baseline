@@ -44,8 +44,6 @@ module "s3_bucket" {
   environment             = var.environment
   label_order             = ["name"]
   managedby               = var.managedby
-  create_bucket           = local.is_cloudtrail_enabled && var.secure_s3_enabled == false
-  bucket_logging_enabled  = var.enabled && var.secure_s3_enabled == false
   versioning              = true
   acl                     = "private"
   bucket_policy           = true
