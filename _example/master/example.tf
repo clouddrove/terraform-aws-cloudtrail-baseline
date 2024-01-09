@@ -23,8 +23,6 @@ module "cloudtrail" {
   sse_algorithm                     = "aws:kms"
   additional_member_root_arn        = ["arn:aws:iam::xxxxxxxxxxxx:root"]
   additional_member_trail           = ["arn:aws:cloudtrail:*:xxxxxxxxxxxx:trail/*"]
-  additional_member_account_id      = ["xxxxxxxxxxxx"]
-  additional_s3_account_path_arn    = ["arn:aws:s3:::test-cloudtrail-bucket/AWSLogs/xxxxxxxxxxxx/*"]
   s3_policy                         = data.aws_iam_policy_document.default.json
 }
 
