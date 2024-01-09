@@ -11,7 +11,6 @@ module "cloudtrail" {
   iam_role_name                     = "CloudTrail-CloudWatch-Delivery-Role"
   iam_role_policy_name              = "CloudTrail-CloudWatch-Delivery-Policy"
   account_type                      = "master"
-  key_deletion_window_in_days       = 10
   cloudwatch_logs_retention_in_days = 365
   cloudwatch_logs_group_name        = "cloudtrail-log-group"
   EVENT_IGNORE_LIST                 = jsonencode(["^Describe*", "^Assume*", "^List*", "^Get*", "^Decrypt*", "^Lookup*", "^BatchGet*", "^CreateLogStream$", "^RenewRole$", "^REST.GET.OBJECT_LOCK_CONFIGURATION$", "TestEventPattern", "TestScheduleExpression", "CreateNetworkInterface", "ValidateTemplate"])
