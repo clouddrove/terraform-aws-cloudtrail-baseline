@@ -2,9 +2,6 @@ provider "aws" {
   region = "us-east-1"
 }
 
-data "aws_caller_identity" "current" {}
-data "aws_region" "current" {}
-
 module "cloudtrail" {
   source                            = "./../../"
   name                              = "test-cloudtrail"
@@ -14,7 +11,6 @@ module "cloudtrail" {
   iam_role_name                     = "CloudTrail-CloudWatch-Delivery-Role"
   iam_role_policy_name              = "CloudTrail-CloudWatch-Delivery-Policy"
   account_type                      = "master"
-  key_deletion_window_in_days       = 10
   cloudwatch_logs_retention_in_days = 365
   cloudwatch_logs_group_name        = "cloudtrail-log-group"
   EVENT_IGNORE_LIST                 = jsonencode(["^Describe*", "^Assume*", "^List*", "^Get*", "^Decrypt*", "^Lookup*", "^BatchGet*", "^CreateLogStream$", "^RenewRole$", "^REST.GET.OBJECT_LOCK_CONFIGURATION$", "TestEventPattern", "TestScheduleExpression", "CreateNetworkInterface", "ValidateTemplate"])
@@ -27,8 +23,6 @@ module "cloudtrail" {
   sse_algorithm                     = "aws:kms"
   additional_member_root_arn        = ["arn:aws:iam::xxxxxxxxxxxx:root"]
   additional_member_trail           = ["arn:aws:cloudtrail:*:xxxxxxxxxxxx:trail/*"]
-  additional_member_account_id      = ["xxxxxxxxxxxx"]
-  additional_s3_account_path_arn    = ["arn:aws:s3:::test-cloudtrail-bucket/AWSLogs/xxxxxxxxxxxx/*"]
   s3_policy                         = data.aws_iam_policy_document.default.json
 }
 

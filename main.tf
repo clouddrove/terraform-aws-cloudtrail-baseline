@@ -44,8 +44,6 @@ module "s3_bucket" {
   environment             = var.environment
   label_order             = ["name"]
   managedby               = var.managedby
-  create_bucket           = local.is_cloudtrail_enabled && var.secure_s3_enabled == false
-  bucket_logging_enabled  = var.enabled && var.secure_s3_enabled == false
   versioning              = true
   acl                     = "private"
   bucket_policy           = true
@@ -120,12 +118,12 @@ data "aws_iam_policy_document" "cloudwatch_delivery_policy" {
   statement {
     sid       = "AWSCloudTrailCreateLogStream2014110"
     actions   = ["logs:CreateLogStream"]
-    resources = [format("arn:aws:logs:%s:%s:log-group:%s:log-stream:*", data.aws_region.current.name, data.aws_caller_identity.current.account_id, join("", aws_cloudwatch_log_group.cloudtrail_events.*.name))]
+    resources = [format("arn:aws:logs:%s:%s:log-group:%s:log-stream:*", data.aws_region.current.name, data.aws_caller_identity.current.account_id, join("", aws_cloudwatch_log_group.cloudtrail_events[*].name))]
   }
   statement {
     sid       = "AWSCloudTrailPutLogEvents20141101"
     actions   = ["logs:PutLogEvents"]
-    resources = [format("arn:aws:logs:%s:%s:log-group:%s:log-stream:*", data.aws_region.current.name, data.aws_caller_identity.current.account_id, join("", aws_cloudwatch_log_group.cloudtrail_events.*.name))]
+    resources = [format("arn:aws:logs:%s:%s:log-group:%s:log-stream:*", data.aws_region.current.name, data.aws_caller_identity.current.account_id, join("", aws_cloudwatch_log_group.cloudtrail_events[*].name))]
   }
 }
 
@@ -334,7 +332,6 @@ data "aws_iam_policy_document" "cloudtrail_key_policy" {
 locals {
   is_individual_account = var.account_type == "individual"
   is_master_account     = var.account_type == "master"
-  is_member_account     = var.account_type == "member"
 
   is_cloudtrail_enabled = local.is_individual_account || local.is_master_account
 }
@@ -357,8 +354,8 @@ module "cloudtrail" {
   is_multi_region_trail         = var.is_multi_region_trail
   is_organization_trail         = var.is_organization_trail
   kms_key_id                    = var.key_arn == "" ? module.kms_key.key_arn : var.key_arn
-  cloud_watch_logs_group_arn    = join("", aws_cloudwatch_log_group.cloudtrail_events.*.arn)
-  cloud_watch_logs_role_arn     = join("", aws_iam_role.cloudwatch_delivery.*.arn)
+  cloud_watch_logs_group_arn    = join("", aws_cloudwatch_log_group.cloudtrail_events[*].arn)
+  cloud_watch_logs_role_arn     = join("", aws_iam_role.cloudwatch_delivery[*].arn)
 }
 
 module "cloudtrail-slack-notification" {
