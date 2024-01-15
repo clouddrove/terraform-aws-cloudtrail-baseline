@@ -55,7 +55,7 @@ module "s3_bucket" {
 }
 
 module "secure_s3_bucket" {
-  source = "git::https://github.com/clouddrove/terraform-aws-s3.git?ref=tags/0.14.0"
+  source = "git::https://github.com/clouddrove/terraform-aws-s3.git?ref=tags/2.0.0"
 
   name                              = var.s3_bucket_name
   environment                       = var.environment
