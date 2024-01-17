@@ -9,7 +9,7 @@ module "cloudtrail" {
 
   name        = "trails"
   environment = "test"
-  label_order = ["environment", "application", "name"]
+  label_order = ["environment", "name"]
 
   enabled                           = true
   secure_s3_enabled                 = false

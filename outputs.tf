@@ -29,11 +29,6 @@ output "s3_arn" {
   description = "The ARN of S3 bucket."
 }
 
-output "kms_arn" {
-  value       = module.kms_key.key_arn
-  description = "The ARN of KMS key."
-}
-
 output "tags" {
   value       = module.labels.tags
   description = "A mapping of tags to assign to the resource."

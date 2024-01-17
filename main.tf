@@ -5,20 +5,17 @@
 data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
 
-#Module      : Label
-#Description : This terraform module is designed to generate consistent label names and
-#              tags for resources. You can use terraform-labels to implement a strict
-#              naming convention
+##-----------------------------------------------------------------------------
+## Labels module callled that will be used for naming and tags.
+##-----------------------------------------------------------------------------
 module "labels" {
-  source = "git::https://github.com/clouddrove/terraform-labels.git?ref=tags/0.15.0"
-
+  source      = "clouddrove/labels/aws"
+  version     = "1.3.0"
   name        = var.name
   environment = var.environment
-  label_order = var.label_order
   managedby   = var.managedby
-  enabled     = var.enabled
+  label_order = var.label_order
 }
-
 
 # Module      : S3 BUCKET
 # Description : Terraform module to create default S3 bucket with logging and encryption
@@ -27,14 +24,12 @@ module "labels" {
 module "s3_log_bucket" {
   source = "git::https://github.com/clouddrove/terraform-aws-s3.git?ref=tags/2.0.0"
 
-  name           = var.s3_log_bucket_name
-  environment    = var.environment
-  label_order    = ["name"]
-  managedby      = var.managedby
-  create_bucket  = local.is_cloudtrail_enabled
-  bucket_enabled = var.enabled
-  versioning     = true
-  acl            = "private"
+  name        = var.s3_log_bucket_name
+  environment = var.environment
+  label_order = ["name"]
+  managedby   = var.managedby
+  versioning  = true
+  acl         = "private"
 }
 
 module "s3_bucket" {
@@ -51,28 +46,24 @@ module "s3_bucket" {
   force_destroy           = true
   target_bucket           = module.s3_log_bucket.id
   target_prefix           = "logs"
-  mfa_delete              = var.mfa_delete
 }
 
 module "secure_s3_bucket" {
   source = "git::https://github.com/clouddrove/terraform-aws-s3.git?ref=tags/2.0.0"
 
-  name                              = var.s3_bucket_name
-  environment                       = var.environment
-  label_order                       = ["name"]
-  managedby                         = var.managedby
-  create_bucket                     = local.is_cloudtrail_enabled && var.secure_s3_enabled
-  bucket_logging_encryption_enabled = var.enabled && var.secure_s3_enabled
-  versioning                        = true
-  acl                               = "private"
-  bucket_policy                     = true
-  aws_iam_policy_document           = var.s3_policy
-  force_destroy                     = true
-  sse_algorithm                     = var.sse_algorithm
-  kms_master_key_id                 = var.key_arn == "" ? module.kms_key.key_arn : var.key_arn
-  target_bucket                     = module.s3_log_bucket.id
-  target_prefix                     = "logs"
-  mfa_delete                        = var.mfa_delete
+  name                    = var.s3_bucket_name
+  environment             = var.environment
+  label_order             = ["name"]
+  managedby               = var.managedby
+  versioning              = true
+  acl                     = "private"
+  bucket_policy           = true
+  aws_iam_policy_document = var.s3_policy
+  force_destroy           = true
+  sse_algorithm           = var.sse_algorithm
+  kms_master_key_id       = var.key_arn == "" ? module.kms_key.key_arn : var.key_arn
+  target_bucket           = module.s3_log_bucket.id
+  target_prefix           = "logs"
 }
 
 #Module      : AWS_CLOUDWATCH_LOG_GROUP
@@ -340,7 +331,8 @@ locals {
 #Description : Terraform module to provision an AWS CloudTrail with encrypted S3 bucket.
 #              This bucket is used to store CloudTrail logs.
 module "cloudtrail" {
-  source = "git::https://github.com/clouddrove/terraform-aws-cloudtrail.git?ref=tags/1.4.0"
+  source  = "clouddrove/cloudtrail/aws"
+  version = "1.4.0"
 
   name                          = var.name
   environment                   = var.environment
