@@ -12,7 +12,6 @@ module "cloudtrail" {
   label_order = ["environment", "name"]
 
   enabled                           = true
-  secure_s3_enabled                 = false
   iam_role_name                     = "CloudTrail-CloudWatch-Delivery-Role"
   iam_role_policy_name              = "CloudTrail-CloudWatch-Delivery-Policy"
   account_type                      = "individual"

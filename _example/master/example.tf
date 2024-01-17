@@ -18,7 +18,6 @@ module "cloudtrail" {
   USER_IGNORE_LIST                  = jsonencode(["^awslambda_*", "^aws-batch$", "^bamboo*", "^i-*", "^[0-9]*$", "^ecs-service-scheduler$", "^AutoScaling$", "^AWSCloudFormation$", "^CloudTrailBot$", "^SLRManagement$"])
   SOURCE_LIST                       = jsonencode(["aws-sdk-go"])
   s3_bucket_name                    = "test-cloudtrail-bucket"
-  secure_s3_enabled                 = false
   s3_log_bucket_name                = "test-clouddtrail-logs"
   sse_algorithm                     = "aws:kms"
   additional_member_root_arn        = ["arn:aws:iam::xxxxxxxxxxxx:root"]
