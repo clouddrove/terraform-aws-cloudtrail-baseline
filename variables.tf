@@ -30,18 +30,6 @@ variable "lambda_enabled" {
   description = "Whether to create lambda for cloudtrail logs."
 }
 
-variable "secure_s3_enabled" {
-  type        = bool
-  default     = true
-  description = "Whether to create secure s3 for cloudtrail logs."
-}
-
-variable "mfa_delete" {
-  type        = bool
-  default     = false
-  description = "Whether to enable mfa_delete or not."
-}
-
 variable "slack_webhook" {
   type        = string
   default     = ""
