@@ -8,12 +8,12 @@ jobs:
   individual:
     uses: clouddrove/github-shared-workflows/.github/workflows/tf-checks.yml@1.2.4
     with:
-      working_directory: './_example/individual/'
+      working_directory: './examples/individual/'
   master:
     uses: clouddrove/github-shared-workflows/.github/workflows/tf-checks.yml@1.2.4
     with:
-      working_directory: './_example/master/'
+      working_directory: './examples/master/'
   member:
     uses: clouddrove/github-shared-workflows/.github/workflows/tf-checks.yml@1.2.4
     with:
-      working_directory: './_example/member/'
+      working_directory: './examples/member/'
