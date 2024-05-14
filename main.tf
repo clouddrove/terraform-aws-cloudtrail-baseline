@@ -174,7 +174,7 @@ data "aws_iam_policy_document" "cloudtrail_key_policy" {
       test     = "StringEquals"
       variable = "AWS:SourceArn"
       values = [
-        "arn:aws:cloudtrail:us-east-1:156873913342:trail/<trail_Name>"
+        "arn:aws:cloudtrail:us-east-1:156873913342:trail/*"
       ]
     }
   }
