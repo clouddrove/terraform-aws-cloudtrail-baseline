@@ -33,7 +33,8 @@ module "s3_log_bucket" {
 }
 
 module "s3_bucket" {
-  source = "git::https://github.com/clouddrove/terraform-aws-s3.git?ref=tags/2.0.0"
+  source  = "clouddrove/s3/aws"
+  version = "2.0.0"
 
   name                    = var.s3_bucket_name
   environment             = var.environment
@@ -43,25 +44,8 @@ module "s3_bucket" {
   acl                     = "private"
   bucket_policy           = true
   aws_iam_policy_document = var.s3_policy
+  only_https_traffic      = false
   force_destroy           = true
-  target_bucket           = module.s3_log_bucket.id
-  target_prefix           = "logs"
-}
-
-module "secure_s3_bucket" {
-  source = "git::https://github.com/clouddrove/terraform-aws-s3.git?ref=tags/2.0.0"
-
-  name                    = var.s3_bucket_name
-  environment             = var.environment
-  label_order             = ["name"]
-  managedby               = var.managedby
-  versioning              = true
-  acl                     = "private"
-  bucket_policy           = true
-  aws_iam_policy_document = var.s3_policy
-  force_destroy           = true
-  sse_algorithm           = var.sse_algorithm
-  kms_master_key_id       = var.key_arn == "" ? module.kms_key.key_arn : var.key_arn
   target_bucket           = module.s3_log_bucket.id
   target_prefix           = "logs"
 }
@@ -332,11 +316,11 @@ locals {
 #              This bucket is used to store CloudTrail logs.
 module "cloudtrail" {
   source  = "clouddrove/cloudtrail/aws"
-  version = "1.4.0"
+  version = "1.4.1"
 
   name                          = var.name
   environment                   = var.environment
-  label_order                   = ["name", "environment"]
+  label_order                   = var.label_order
   managedby                     = var.managedby
   enabled_cloudtrail            = var.enabled
   s3_bucket_name                = format("%s", var.s3_bucket_name)
@@ -345,7 +329,6 @@ module "cloudtrail" {
   include_global_service_events = var.include_global_service_events
   is_multi_region_trail         = var.is_multi_region_trail
   is_organization_trail         = var.is_organization_trail
-  kms_key_id                    = var.key_arn == "" ? module.kms_key.key_arn : var.key_arn
   cloud_watch_logs_group_arn    = join("", aws_cloudwatch_log_group.cloudtrail_events[*].arn)
   cloud_watch_logs_role_arn     = join("", aws_iam_role.cloudwatch_delivery[*].arn)
 }
