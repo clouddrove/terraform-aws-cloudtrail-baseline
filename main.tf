@@ -22,6 +22,7 @@ module "labels" {
 #               type specific features.
 
 module "s3_log_bucket" {
+  count  = var.s3_log_bucket ? 1 : 0
   source = "git::https://github.com/clouddrove/terraform-aws-s3.git?ref=tags/2.0.0"
 
   name        = var.s3_log_bucket_name
@@ -33,6 +34,7 @@ module "s3_log_bucket" {
 }
 
 module "s3_bucket" {
+  count   = var.s3_bucket ? 1 : 0
   source  = "clouddrove/s3/aws"
   version = "2.0.0"
 
@@ -334,6 +336,7 @@ module "cloudtrail" {
 }
 
 module "cloudtrail-slack-notification" {
+  count  = var.cloudtrail-slack-notification ? 1 : 0
   source = "git::https://github.com/clouddrove/terraform-aws-cloudtrail-slack-notification.git?ref=tags/1.0.1"
 
   name        = "cloudtrail-slack-notification"
