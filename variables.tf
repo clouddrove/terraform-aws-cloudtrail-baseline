@@ -172,3 +172,21 @@ variable "sse_algorithm" {
   description = "The server-side encryption algorithm to use. Valid values are AES256 and aws:kms."
 }
 
+variable "cloudtrail-slack-notification" {
+  type        = bool
+  default     = true
+  description = "Enable CloudTrail Slack Notification."
+}
+
+variable "s3_bucket" {
+  type        = bool
+  default     = true
+  description = "enable s3 bucket"
+}
+
+variable "s3_log_bucket" {
+  type        = bool
+  default     = true
+  description = "enable s3 log bucket"
+}
+
