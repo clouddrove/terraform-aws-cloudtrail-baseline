@@ -36,7 +36,7 @@ module "s3_log_bucket" {
 module "s3_bucket" {
   count   = var.s3_bucket ? 1 : 0
   source  = "clouddrove/s3/aws"
-  version = "2.0.0"
+  version = "2.0.1"
 
   name                    = var.s3_bucket_name
   environment             = var.environment
