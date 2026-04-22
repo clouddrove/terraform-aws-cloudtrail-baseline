@@ -23,7 +23,7 @@ module "labels" {
 
 module "s3_log_bucket" {
   count  = var.s3_log_bucket ? 1 : 0
-  source = "git::https://github.com/clouddrove/terraform-aws-s3.git?ref=tags/2.0.0"
+  source = "git::https://github.com/clouddrove/terraform-aws-s3.git?ref=tags/v2.0.1"
 
   name        = var.s3_log_bucket_name
   environment = var.environment
