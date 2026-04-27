@@ -318,7 +318,7 @@ locals {
 #              This bucket is used to store CloudTrail logs.
 module "cloudtrail" {
   source  = "clouddrove/cloudtrail/aws"
-  version = "1.4.2"
+  version = "1.4.3"
 
   name                          = var.name
   environment                   = var.environment
