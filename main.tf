@@ -337,7 +337,7 @@ module "cloudtrail" {
 
 module "cloudtrail-slack-notification" {
   count  = var.cloudtrail-slack-notification ? 1 : 0
-  source = "git::https://github.com/clouddrove/terraform-aws-cloudtrail-slack-notification.git?ref=tags/1.0.1"
+  source = "git::https://github.com/clouddrove/terraform-aws-cloudtrail-slack-notification.git?ref=tags/v1.0.2"
 
   name        = "cloudtrail-slack-notification"
   environment = var.environment
