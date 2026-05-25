@@ -9,6 +9,7 @@
 | account\_type | The type of the AWS account. The possible values are `individual`, `master` and `member` . Specify `master` and `member` to set up centalized logging for multiple accounts in AWS Organization. Use individual` otherwise.` | `string` | `"individual"` | no |
 | additional\_member\_root\_arn | Additional member root user arn. | `list(any)` | `[]` | no |
 | additional\_member\_trail | Additional member trails. | `list(any)` | `[]` | no |
+| cloudtrail-slack-notification | Enable CloudTrail Slack Notification. | `bool` | `true` | no |
 | cloudwatch\_logs\_group\_name | The name of CloudWatch Logs group to which CloudTrail events are delivered. | `string` | `"iam_role_name"` | no |
 | cloudwatch\_logs\_retention\_in\_days | Number of days to retain logs for. CIS recommends 365 days.  Possible values are: 0, 1, 3, 5, 7, 14, 30, 60, 90, 120, 150, 180, 365, 400, 545, 731, 1827, and 3653. Set to 0 to keep logs indefinitely. | `number` | `365` | no |
 | enable\_log\_file\_validation | Specifies whether the trail is an AWS Organizations trail. Organization trails log events for the master account and all member accounts. Can only be created in the organization master account. | `bool` | `true` | no |
@@ -25,7 +26,9 @@
 | lambda\_enabled | Whether to create lambda for cloudtrail logs. | `bool` | `true` | no |
 | managedby | ManagedBy, eg 'CloudDrove' or 'AnmolNagpal'. | `string` | `"anmol@clouddrove.com"` | no |
 | name | Name  (e.g. `app` or `cluster`). | `string` | `""` | no |
+| s3\_bucket | enable s3 bucket | `bool` | `true` | no |
 | s3\_bucket\_name | The name of the S3 bucket which will store cloudtrail logs. | `string` | n/a | yes |
+| s3\_log\_bucket | enable s3 log bucket | `bool` | `true` | no |
 | s3\_log\_bucket\_name | The name of the S3 bucket which will store logs of bucket. | `string` | n/a | yes |
 | s3\_policy | Policy of s3.. | `string` | `null` | no |
 | slack\_channel | Channel of slack. | `string` | `""` | no |
