@@ -105,7 +105,7 @@ data "aws_iam_policy_document" "cloudwatch_delivery_policy" {
 }
 
 module "kms_key" {
-  source = "git::https://github.com/clouddrove/terraform-aws-kms.git?ref=tags/v1.3.2"
+  source = "git::https://github.com/clouddrove/terraform-aws-kms.git?ref=tags/v1.3.3"
 
   name                    = var.name
   environment             = var.environment
